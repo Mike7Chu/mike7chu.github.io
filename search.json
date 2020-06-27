@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "코틀린(Kotlin) 변수 -2-",
+      "category" : "",
+      "tags"     : "Kotlin",
+      "url"      : "/variable-Kotlin/",
+      "date"     : "2020-06-28 08:00:22 +0900"
+    } ,
+  
+    {
       "title"    : "코틀린(Kotlin) 개요 -1-",
       "category" : "",
       "tags"     : "Kotlin and sublime",
