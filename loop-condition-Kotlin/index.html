@@ -6,10 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>코틀린(Kotlin) 변수 -2-</title>
+  <title>코틀린(Kotlin) 조건문 반복문 -4-</title>
   <meta name='description' content='These story for everything such as Life, develop and daily.'>
 
-  <link rel="canonical" href="http://192.168.219.102:4000/variable-Kotlin/">
+  <link rel="canonical" href="http://192.168.219.102:4000/loop-condition-Kotlin/">
   <link rel="alternate" type="application/rss+xml" title="Mike Chu&#39;s Story | Thank you for visiting." href="/feed.xml">
 
   <!-- Google Font -->
@@ -133,7 +133,7 @@
 						
 					</div>
 					
-					<h1 class="post-title">코틀린(Kotlin) 변수 -2-</h1>
+					<h1 class="post-title">코틀린(Kotlin) 조건문 반복문 -4-</h1>
 					<div class="post-info">
 						<div class="post-info-author">
 							<div class="info-author-avatar" style="background-image: url(/img/mike.chu.jpg)"></div>
@@ -142,7 +142,7 @@
 						</div>
 						<div class="post-date">
 							<span>
-								<time datetime="2020-06-28T08:00:22+09:00">Jun 28, 2020</time>
+								<time datetime="2020-07-12T09:20:22+09:00">Jul 12, 2020</time>
 							</span>
 						</div>
 					</div>
@@ -150,56 +150,135 @@
 
 				<div class="post-body">
 					<h2 id="overview">Overview</h2>
-<p>안녕하세요. 코틀린의 변수에 대해서 알아보겠습니다. 코틀린은 기본적으로 프로젝트, 패키지, 모듈, 파일로 구성되어 있습니다. 이 안에서 변수는 어떻게 생성되고, 메모리에 담기는지 생각하면서 알아보도록 하겠습니다.<br />
+<p>조건문과 반복문은 프로그램 흐름제어에서 많이 쓰입니다. 코틀린에서는 어떻게 표현하고, 더 간결하게 사용할 수 있는지 알아보겠습니다.<br />
 <span style="color: grey"><em>이 글은 “Do it! 코틀린 프로그래밍”을 읽으면서 작성되었습니다.</em></span><br />
 <br />
-<a href="#변수의-선언">1. 변수의 선언</a><br />
-<a href="#null-확인">2. Null 확인</a><br />
+<a href="#조건문">1. 조건문</a><br />
+<a href="#고차함수와-람다식">2. 반복문</a><br />
 <a href="#마치며">3. 마치며</a></p>
 
 <hr />
 
-<h2 id="변수의-선언">변수의 선언</h2>
-<p>변수는 기본적으로 값을 넣을 수 있는 공간과 같습니다. 변수를 선언하면 메모리 상에 공간이 할당되고, 이 공간에 값을 넣을 수 있습니다. 코틀린은 변수를 선언할 때 다음과 같이 선언할 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">val</span> <span class="py">name1</span>                     <span class="c1">// 변수를 선언 자료형을 알지 못하므로 사용 불가</span>
-  <span class="kd">val</span> <span class="py">name2</span> <span class="p">=</span> <span class="s">"Kildong"</span>         <span class="c1">// 변수를 선언 및 정의</span>
-  <span class="kd">var</span> <span class="py">name3</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">"Kildong"</span> <span class="c1">// 변수를 타입까지 정의</span>
-</code></pre></div></div>
-<p><br />
-코틀린에서는 <strong>선언 키워드 변수이름 : 자료형 = 값</strong>으로 변수를 선언 및 정의하고 있습니다.
-위의 예시에서 첫번째 줄에서 변수는 에러가 날 것입니다. 코틀린은 자료형을 반드시 지정해야합니다.
-또한 val과 var이 있습니다. var같은 경우 변수를 뜻하며 초기화 후 값을 변경할 수 있습니다. val의 경우 값이 할당 된 후 더 이상 변경할 수 없습니다.<br />
-그리고 두번째 줄과 같이 자료형 없이 선언하면 코틀린에서는 알맞는 자료형을 자동할당 합니다. 이를 오토타입이라고도 합니다.</p>
+<h2 id="조건문">조건문</h2>
+<p>조건문은 어떠한 조건에 따라 프로그램을 다르게 실행시키고 싶을 때 사용합니다. 코틀린은 java와 크게 다르지 않지만, 더 간결하게 사용할 수 있는 방법이 있습니다. 우선 일반적으로 사용하는 조건문을 알아보겠습니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="n">print</span><span class="p">(</span><span class="s">"Enter the score: "</span><span class="p">)</span>
+    <span class="kd">val</span> <span class="py">score</span> <span class="p">=</span> <span class="n">readLine</span><span class="p">()</span><span class="o">!!</span><span class="p">.</span><span class="n">toDouble</span><span class="p">()</span>
+    <span class="kd">var</span> <span class="py">grade</span><span class="p">:</span> <span class="n">Char</span> <span class="p">=</span> <span class="sc">'F'</span>
 
-<hr />
+    <span class="k">if</span><span class="p">(</span><span class="n">score</span> <span class="p">&gt;=</span> <span class="m">90.0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">grade</span> <span class="p">=</span> <span class="sc">'A'</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">score</span> <span class="p">&gt;=</span> <span class="m">80.0</span> <span class="p">&amp;&amp;</span> <span class="n">score</span> <span class="p">&lt;=</span> <span class="m">89.9</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">grade</span> <span class="p">=</span> <span class="sc">'B'</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">score</span> <span class="p">&gt;=</span> <span class="m">70.0</span> <span class="p">&amp;&amp;</span> <span class="n">score</span> <span class="p">&lt;=</span> <span class="m">79.9</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">grade</span> <span class="p">=</span> <span class="sc">'C'</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">grade</span> <span class="p">=</span> <span class="sc">'D'</span>
+    <span class="p">}</span>
 
-<h2 id="null-확인">Null 확인</h2>
-<p>Kotlin은 변수에 반드시 자료가 할당되어 있어야 합니다. 만약 null이라면 컴파일 시 에러를 발생 시킵니다. 에러를 발생시키지 않기 위해서 코틀린에서 Null을 어떻게 처리하는지 알아보겠습니다.<br />
-<br />
-만약 Null이 할당된 변수에 접근하면 NullPointerException이 발생하게 됩니다. 코틀린은 Null에 대한 안전한 처리를 위해서 변수에 값이 할당되도록 되어 있습니다. 하지만 null을 할당해야할 경우 코틀린에서는 다음과 같이 변수를 선언 합니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">var</span> <span class="py">str1</span> <span class="p">:</span> <span class="n">String</span><span class="p">?</span> <span class="p">=</span> <span class="s">"Hello Kotlin"</span>
-  <span class="n">str1</span> <span class="p">=</span> <span class="k">null</span>
-  <span class="n">println</span><span class="p">(</span><span class="s">"str1: $str1 length: $(str1?.length)"</span><span class="p">)</span> <span class="c1">// 세이프 콜로 호출</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"Score: $score Grade: $grade"</span><span class="p">)</span>
+  <span class="p">}</span>
 </code></pre></div></div>
 <p><br />
-? 심볼을 자료형 뒤에 추가하면 됩니다. ? 심볼을 추가함으로써 명시적으로 null을 가질 수 있는 변수라고 하는 것입니다. 또한 세이프 콜이라고 하여 null 객체 뒤에 ? 심볼을 추가하면 null이 아니면 호출하도록 하고 있습니다. 이를 엘비스 연산자(<em>?</em>)와 함께 사용하면 다음과 같이 표현할 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">var</span> <span class="py">str1</span> <span class="p">:</span> <span class="n">String</span><span class="p">?</span> <span class="p">=</span> <span class="s">"Hello Kotlin"</span>
-  <span class="n">str1</span> <span class="p">=</span> <span class="k">null</span>
-  <span class="n">println</span><span class="p">(</span><span class="s">"str1: $str1 length: $(str1?.length ?:-1)"</span><span class="p">)</span> <span class="c1">// 세이프 콜로 호출</span>
+readLine()으로부터 입력을 받아 score에 따른 grade를 결정하는 조건문 입니다. 여기서 !!은 not-null의 뜻으로 null값이 절대 오지 않는다는 표현입니다. 만약 null 값이 오게되면 에러를 발생합니다. 이제 여기서 코틀린 만의 간결한 표현을 한다면 람다식을 이용했던 방식으로 바로 grade 변수에 정의를 내릴 수 있습니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="n">print</span><span class="p">(</span><span class="s">"Enter the score: "</span><span class="p">)</span>
+    <span class="kd">val</span> <span class="py">score</span> <span class="p">=</span> <span class="n">readLine</span><span class="p">()</span><span class="o">!!</span><span class="p">.</span><span class="n">toDouble</span><span class="p">()</span>
+
+    <span class="kd">var</span> <span class="py">grade</span><span class="p">:</span> <span class="n">Char</span> <span class="p">=</span> <span class="k">if</span><span class="p">(</span><span class="n">score</span> <span class="p">&gt;=</span> <span class="m">90.0</span><span class="p">)</span>
+        <span class="sc">'A'</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">score</span> <span class="p">&gt;=</span> <span class="m">80.0</span> <span class="p">&amp;&amp;</span> <span class="n">score</span> <span class="p">&lt;=</span> <span class="m">89.9</span><span class="p">)</span>
+        <span class="sc">'B'</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">score</span> <span class="p">&gt;=</span> <span class="m">70.0</span> <span class="p">&amp;&amp;</span> <span class="n">score</span> <span class="p">&lt;=</span> <span class="m">79.9</span><span class="p">)</span>
+        <span class="sc">'C'</span>
+    <span class="k">else</span>
+        <span class="sc">'D'</span>
+
+    <span class="n">println</span><span class="p">(</span><span class="s">"Score: $score Grade: $grade"</span><span class="p">)</span>
+  <span class="p">}</span>
 </code></pre></div></div>
 <p><br />
-엘비스 연산자는 널인지 확인하여 널인 경우 오른쪽 값을 널이 아닌 경우 왼쪽 값을 반환해줍니다. 이를 통해서 null에 대해서 안전하게 처리할 수 있습니다. 이게 많은 사람들이 말하는 코틀린의 장점 입니다.</p>
+그리고 논리 연산자로 &amp;&amp;를 사용하여 두개의 조건식으로 범위를 나타내었습니다. 코틀린에서는 범위 연산자가 in이 존재하여 다음과 같이 간결하게 표현 가능합니다.</p>
+
+<blockquote>
+  <p><strong>변수 이름 in 시작값..마지막값</strong></p>
+</blockquote>
+
+<p>범위 연산자는 시작값부터 마지막값까지 포함하는 범위를 계산합니다. 그에 따라 시작값과 마지막값도 포함 됩니다. 표현하면 아래와 같습니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="n">print</span><span class="p">(</span><span class="s">"Enter the score: "</span><span class="p">)</span>
+    <span class="kd">val</span> <span class="py">score</span> <span class="p">=</span> <span class="n">readLine</span><span class="p">()</span><span class="o">!!</span><span class="p">.</span><span class="n">toDouble</span><span class="p">()</span>
+
+    <span class="kd">var</span> <span class="py">grade</span><span class="p">:</span> <span class="n">Char</span> <span class="p">=</span> <span class="k">if</span><span class="p">(</span><span class="n">score</span> <span class="p">&gt;=</span> <span class="m">90.0</span><span class="p">)</span>
+        <span class="sc">'A'</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">score</span> <span class="k">in</span> <span class="m">80.0</span> <span class="o">..</span> <span class="m">89.9</span><span class="p">)</span>
+        <span class="sc">'B'</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">score</span> <span class="k">in</span> <span class="m">70.0</span> <span class="o">..</span> <span class="m">79.9</span><span class="p">)</span>
+        <span class="sc">'C'</span>
+    <span class="k">else</span>
+        <span class="sc">'D'</span>
+
+    <span class="n">println</span><span class="p">(</span><span class="s">"Score: $score Grade: $grade"</span><span class="p">)</span>
+  <span class="p">}</span>
+</code></pre></div></div>
+<p><br />
+앞에서는 else if 문의 분기가 4개 등급일 경우였습니다. 하지만 만약 분기가 더 많아지면 코드가 길어지고 복잡해집니다. 코틀린에서는 when문을 통해서 아래와 같이 간결하게 수행 가능합니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="n">print</span><span class="p">(</span><span class="s">"Enter the score: "</span><span class="p">)</span>
+    <span class="kd">val</span> <span class="py">score</span> <span class="p">=</span> <span class="n">readLine</span><span class="p">()</span><span class="o">!!</span><span class="p">.</span><span class="n">toDouble</span><span class="p">()</span>
+
+    <span class="kd">var</span> <span class="py">grade</span><span class="p">:</span> <span class="n">Char</span> <span class="p">=</span> <span class="k">when</span> <span class="p">{</span>
+      <span class="n">score</span> <span class="p">&gt;=</span> <span class="m">90.0</span> <span class="p">-&gt;</span> <span class="sc">'A'</span>
+      <span class="n">score</span> <span class="k">in</span> <span class="m">80.0</span> <span class="o">..</span> <span class="m">89.9</span> <span class="p">-&gt;</span> <span class="sc">'B'</span>
+      <span class="n">score</span> <span class="k">in</span> <span class="m">70.0</span> <span class="o">..</span> <span class="m">79.9</span> <span class="p">-&gt;</span> <span class="sc">'C'</span>
+      <span class="k">else</span> <span class="p">-&gt;</span> <span class="sc">'D'</span>
+    <span class="p">}</span>
+
+    <span class="n">println</span><span class="p">(</span><span class="s">"Score: $score Grade: $grade"</span><span class="p">)</span>
+  <span class="p">}</span>
+</code></pre></div></div>
+<p><br />
+when문은 인자를 넣어 <em>when(score)</em> 표현해도 가능하고, 위 처럼 인자를 넣지 않아도 됩니다. 화살표 기호에 따라 실행을 어떻게 할건지 구성할 수 있습니다. 처음 코드보다 훨씬 간결해졌죠?<br />
+————————</p>
+
+<h2 id="반복문">반복문</h2>
+<p>반복문은 java와 같습니다. 반복문은 for, while, do while문을 사용하여 반복해야할 작업을 조건에 따라 실행합니다. 다만 코틀린에서는 위에서 배웠단 범위 연산자를 사용 가능하여 범위 조건에 대해서는 간결하게 표현 가능합니다. 하나의 예시를 표현하면 아래와 같습니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="n">print</span><span class="p">(</span><span class="s">"Enter an integer: "</span><span class="p">)</span>
+        <span class="kd">val</span> <span class="py">input</span> <span class="p">=</span> <span class="n">readLine</span><span class="p">()</span><span class="o">!!</span><span class="p">.</span><span class="n">toInt</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="k">in</span> <span class="m">0</span> <span class="o">..</span> <span class="p">(</span><span class="n">input</span><span class="p">-</span><span class="m">1</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">for</span><span class="p">(</span><span class="n">j</span> <span class="k">in</span> <span class="m">0</span><span class="o">..</span><span class="p">(</span><span class="n">input</span><span class="p">-</span><span class="m">1</span><span class="p">))</span> <span class="n">print</span><span class="p">((</span><span class="n">i</span> <span class="p">+</span> <span class="n">j</span><span class="p">)</span> <span class="p">%</span> <span class="n">input</span> <span class="p">+</span><span class="m">1</span><span class="p">)</span>
+            <span class="n">println</span><span class="p">()</span>
+        <span class="p">}</span>
+
+    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">input</span> <span class="p">!=</span> <span class="m">0</span><span class="p">)</span>
+  <span class="p">}</span>
+</code></pre></div></div>
+<blockquote>
+  <p>Enter an integer: 5<br />
+12345<br />
+23451<br />
+34512<br />
+45123<br />
+51234<br />
+Enter an integer: 0<br />
+Process finished with exit code 0</p>
+</blockquote>
+
+<p>readLine()으로 입력값을 받고 숫자를 순서대로 나열하고 하나씩 자리를 옮겨가며 반복합니다. 그리고 input이 0이되면 while 조건식이 맞지 않아 빠져나오게 됩니다.</p>
 
 <hr />
 
 <h2 id="마치며">마치며</h2>
-<p>오늘은 코틀린의 변수에 대해서 살펴봤습니다. 사실 연산자까지 공부했었는데 연산자의 경우 JAVA와 크게 다르지 않아 다루지 않았습니다. 코틀린은 null 회피 말고도 JAVA에서 사용했던 표현을 많이 간결하게 사용할 수 있습니다. 아직 경험치가 부족하여 이런 부분은 다루기 힘들고 더욱 공부하여 포스팅 하도록 하겠습니다.</p>
+<p>코틀린의 흐름 제어 중 크게 반복문과 조건문을 알아보았습니다. 그 외에도 continue, break, try catch, 등 예외 처리나 다른 흐름 제어문에 대해서도 알고 있어야합니다. 이 내용은 java와 크게 다르지 않아 다루지 않았습니다.</p>
 
 
 					<div class="post-share">
 						<ul class="share-list list-reset">
 							<li class="share-item">
-								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/variable-Kotlin/"
+								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/loop-condition-Kotlin/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Facebook" rel="nofollow">
 									<i class="ion ion-logo-facebook"></i>
@@ -207,7 +286,7 @@
 							</li>
 					
 							<li class="share-item">
-								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EB%B3%80%EC%88%98%20-2-&url=http://192.168.219.102:4000/variable-Kotlin/"
+								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EC%A1%B0%EA%B1%B4%EB%AC%B8%20%EB%B0%98%EB%B3%B5%EB%AC%B8%20-4-&url=http://192.168.219.102:4000/loop-condition-Kotlin/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Twitter" rel="nofollow">
 									<i class="ion ion-logo-twitter"></i>
@@ -215,7 +294,7 @@
 							</li>
 					
 							<li class="share-item">
-								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/variable-Kotlin/&title=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EB%B3%80%EC%88%98%20-2-&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
+								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/loop-condition-Kotlin/&title=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EC%A1%B0%EA%B1%B4%EB%AC%B8%20%EB%B0%98%EB%B3%B5%EB%AC%B8%20-4-&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on LinkedIn" rel="nofollow">
 									<i class="ion ion-logo-linkedin"></i>
@@ -223,7 +302,7 @@
 							</li>
 					
 							<li class="share-item">
-								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/variable-Kotlin/&amp;media=http://192.168.219.102:4000/img/Kotlin-logo.png&amp;description=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EB%B3%80%EC%88%98%20-2-"
+								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/loop-condition-Kotlin/&amp;media=http://192.168.219.102:4000/img/Kotlin-logo.png&amp;description=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EC%A1%B0%EA%B1%B4%EB%AC%B8%20%EB%B0%98%EB%B3%B5%EB%AC%B8%20-4-"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Pinterest" rel="nofollow">
 									<i class="ion ion-logo-pinterest"></i>
@@ -235,16 +314,11 @@
 
 				<div class="post-navigation">
 					
-					<a href="/Itroduce-Kotlin/" class="prev">
+					<a href="/function-Kotlin/" class="prev">
 						<div class="post-nav-arrow"><i class="ion ion-ios-arrow-round-back"></i> Previous Article</div>
-						<h2 class="post-nav-title">코틀린(Kotlin) 개요 -1-</h2>
-					</a>
-					 
-					<a href="/function-Kotlin/" class="next">
-						<div class="post-nav-arrow">Next Article <i class="ion ion-ios-arrow-round-forward"></i></div>
 						<h2 class="post-nav-title">코틀린(Kotlin) 함수 -3-</h2>
 					</a>
-					
+					 
 				</div>
 
 			</div>
