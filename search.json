@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "코틀린(Kotlin) 클래스 -5-",
+      "category" : "",
+      "tags"     : "Kotlin",
+      "url"      : "/class-Kotlin/",
+      "date"     : "2020-07-19 14:30:22 +0900"
+    } ,
+  
+    {
       "title"    : "코틀린(Kotlin) 조건문 반복문 -4-",
       "category" : "",
       "tags"     : "Kotlin",
