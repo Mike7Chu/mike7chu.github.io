@@ -6,10 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>코틀린(Kotlin) 클래스 -5-</title>
+  <title>코틀린(Kotlin) 프로퍼티(2) -7-</title>
   <meta name='description' content='These story for everything such as Life, develop and daily.'>
 
-  <link rel="canonical" href="http://192.168.219.102:4000/class-Kotlin/">
+  <link rel="canonical" href="http://192.168.219.102:4000/property-Kotlin-2/">
   <link rel="alternate" type="application/rss+xml" title="Mike Chu&#39;s Story | Thank you for visiting." href="/feed.xml">
 
   <!-- Google Font -->
@@ -143,7 +143,7 @@
 						
 					</div>
 					
-					<h1 class="post-title">코틀린(Kotlin) 클래스 -5-</h1>
+					<h1 class="post-title">코틀린(Kotlin) 프로퍼티(2) -7-</h1>
 					<div class="post-info">
 						<div class="post-info-author">
 							<div class="info-author-avatar" style="background-image: url(/img/mike.chu.jpg)"></div>
@@ -152,7 +152,7 @@
 						</div>
 						<div class="post-date">
 							<span>
-								<time datetime="2020-07-19T14:30:22+09:00">Jul 19, 2020</time>
+								<time datetime="2020-08-02T12:30:22+09:00">Aug 02, 2020</time>
 							</span>
 						</div>
 					</div>
@@ -160,180 +160,172 @@
 
 				<div class="post-body">
 					<h2 id="overview">Overview</h2>
-<p>객체 지행 프로그래밍에서는 클래스라는 개념이 빠질 수 없습니다. 많은 객체를 클래스로 구현하기 때문입니다. 만약 클래스가 익숙하지 않으시다면 제 블로그가 도움이 되지 않을 수 있습니다. 코틀린에서 클래스를 어떻게 표현하는지 알아보겠습니다.<br />
+<p>프로퍼티와 관련하여 by(위임자)와, companion 객체를 정리하겠습니다.<br />
 <span style="color: grey"><em>이 글은 “Do it! 코틀린 프로그래밍”을 읽으면서 작성되었습니다.</em></span><br />
 <br />
-<a href="#클래스의-생성자">1. 클래스의 생성자</a><br />
-<a href="#클래스-상속">2. 클래스 상속</a><br />
+<a href="#by-위임자">1. by 위임자</a><br />
+<a href="#Companion-객체">2. Companion 객체</a><br />
 <a href="#마치며">3. 마치며</a></p>
 
 <hr />
 
-<h2 id="클래스의-생성자">클래스의 생성자</h2>
-<p>코틀린에서의 클래스는 메소드(함수)와 프로퍼티(변수)를 가집니다. 변수 또는 필드라고 하지않고 프로퍼티라고 지칭하는 이유는 프로퍼티마다 내부적으로 자체의 접근 메소드를 가지고 있기 때문이라고 합니다.<br />
-클래스를 만들어 볼텐데요. 일반적으로 클래스를 호출하면 다음과 같이 정의하고 호출할 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Bird</span><span class="p">{</span>
-    <span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span>
-    <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span>
-    <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span>
-    <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span>
+<h2 id="by-위임자">by 위임자</h2>
+<p>코틀린에서 클래스나 프로퍼티를 위임할 수 있습니다. 위임을 하여 위임 받는 클래스가 위임하는 클래스의 멤버를 참조 없이 호출할 수 있습니다. 여기서 프로퍼티 위임은 게터나 세터를 다른클래스에게 위임하는 것을 의미합니다. 표현은 다음과 같이 할 수 있습니다.</p>
+<blockquote>
+  <p><strong>&lt;val|var|class&gt; 프로퍼티 혹은 클래스 이름: 자료형 by 위임자</strong></p>
+</blockquote>
 
-    <span class="k">constructor</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">wing</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="n">beak</span><span class="p">:</span><span class="n">String</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="nc">String</span><span class="p">){</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="n">name</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">wing</span> <span class="p">=</span> <span class="n">wing</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">beak</span> <span class="p">=</span> <span class="n">beak</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">color</span> <span class="p">=</span> <span class="n">color</span>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">Car</span> <span class="p">{</span>
+    <span class="k">fun</span> <span class="nf">go</span><span class="p">():</span> <span class="nc">String</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">VanImpl</span><span class="p">(</span><span class="kd">val</span> <span class="py">power</span><span class="p">:</span> <span class="n">String</span><span class="p">):</span> <span class="nc">Car</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">go</span><span class="p">()</span> <span class="p">=</span> <span class="s">"은 적제하며 $power 을 가집니다."</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">SportImpl</span><span class="p">(</span><span class="kd">val</span> <span class="py">power</span><span class="p">:</span> <span class="n">String</span><span class="p">):</span> <span class="nc">Car</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">go</span><span class="p">()</span> <span class="p">=</span> <span class="s">"은 경주용에 사용되며 $power 을 가집니다."</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">CarModel</span><span class="p">(</span><span class="kd">val</span> <span class="py">model</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="nv">impl</span><span class="p">:</span> <span class="nc">Car</span><span class="p">):</span> <span class="nc">Car</span> <span class="k">by</span> <span class="n">impl</span> <span class="p">{</span>
+    <span class="k">fun</span> <span class="nf">carInfo</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">"$model ${go()}"</span><span class="p">)</span>
     <span class="p">}</span>
+<span class="p">}</span>
 
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
+<span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">myDamas</span> <span class="p">=</span> <span class="n">CarModel</span><span class="p">(</span><span class="s">"Damas 2010"</span><span class="p">,</span> <span class="n">VanImpl</span><span class="p">(</span><span class="s">"100마력"</span><span class="p">))</span>
+    <span class="kd">val</span> <span class="py">my350z</span> <span class="p">=</span> <span class="n">CarModel</span><span class="p">(</span><span class="s">"350Z 2008"</span><span class="p">,</span> <span class="n">SportImpl</span><span class="p">(</span><span class="s">"350마력"</span><span class="p">))</span>
 
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kd">val</span> <span class="py">coco</span> <span class="p">=</span> <span class="n">Bird</span><span class="p">(</span><span class="s">"mybird"</span><span class="p">,</span><span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
-
-    <span class="n">coco</span><span class="p">.</span><span class="n">color</span><span class="p">=</span><span class="s">"yellow"</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"cooc.color: ${coco.color}"</span><span class="p">)</span>
-    <span class="n">coco</span><span class="p">.</span><span class="n">fly</span><span class="p">()</span>
-    <span class="n">coco</span><span class="p">.</span><span class="n">sing</span><span class="p">(</span><span class="m">3</span><span class="p">)</span>
-  <span class="p">}</span>
+    <span class="n">myDamas</span><span class="p">.</span><span class="n">carInfo</span><span class="p">()</span>
+    <span class="n">my350z</span><span class="p">.</span><span class="n">carInfo</span><span class="p">()</span>
+<span class="p">}</span>
 </code></pre></div></div>
 <blockquote>
-  <p>cooc.color: yellow<br />
-Fly wing: 2<br />
-Sing vol: 3</p>
+  <p>Damas 2010 은 적제하며 100마력 을 가집니다.<br />
+350Z 2008 은 경주용에 사용되며 350마력 을 가집니다.</p>
 </blockquote>
 
 <p><br />
-main문을 확인하면 Bird 클래스를 매개변수와 함께 coco로 생성하고 coco의 color를 변경하는 예제입니다. 여기서 <strong>constructor</strong>메소드를 볼 수 있는데요, 이것이 생성자 입니다. 일반적으로 java에서 위와 같이 표현을 하고 있고, 다만 다른 것은 new 키워드가 사라졌습니다. Kotlin에서는 new 없이도 객체를 생성할 수 있습니다.<br />
- 생성자를 다르게도 표현할 수 있는데요. 다음 예제를 보시면 됩니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Bird</span> <span class="p">(</span><span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
+지난번에 lazy 를 배웠었는데요, lazy도 잘보면 위임자를 통해서 사용하고 있습니다. <em>val subject by lazy</em> 그 외에도 코틀린에서 프로퍼티를 위임하는 객체인 Delegates로부터 사용할 수 있는 위임자인 observable(), vetoable() 메소드 등이 있습니다. 이 메소드들은 값이 변경되기 전 또는 후처리를 정의할 수 있습니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span>  <span class="nn">kotlin.properties.Delegates</span>
 
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<p><br />
-클래스 명시시 생성자를 함께 할 수 있습니다. 클래스 옆에 있는 생성자를 주 생성자, constructor 메소드를 부 생성자라고 합니다. 만약 생성자에서 처리해야할 구문이 존재한다면, 초기화(<strong>init</strong>) 블록을 넣을 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Bird</span> <span class="p">(</span><span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
+<span class="kd">class</span> <span class="nc">User</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span> <span class="k">by</span> <span class="n">Delegates</span><span class="p">.</span><span class="n">observable</span><span class="p">(</span><span class="s">"NONAME"</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">prop</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="p">-&gt;</span><span class="n">println</span><span class="p">(</span><span class="s">"$old -&gt; $new"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-    <span class="n">init</span> <span class="p">{</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">"----------초기화 블록 시작----------"</span><span class="p">)</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">"이름은 $name, 부리는 $beak"</span><span class="p">)</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">sing</span><span class="p">(</span><span class="m">3</span><span class="p">)</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">"----------초기화 블록 끝----------"</span><span class="p">)</span>
+<span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">user</span> <span class="p">=</span> <span class="n">User</span><span class="p">()</span>
+    <span class="n">user</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="s">"Kildong"</span>
+    <span class="n">user</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="s">"Dooly"</span>
+
+    <span class="kd">var</span> <span class="py">max</span><span class="p">:</span> <span class="n">Int</span> <span class="k">by</span> <span class="n">Delegates</span><span class="p">.</span><span class="n">vetoable</span><span class="p">(</span><span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">prop</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="p">-&gt;</span> <span class="n">new</span> <span class="p">&gt;</span> <span class="n">old</span>
     <span class="p">}</span>
 
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"max = $max"</span><span class="p">)</span>
+    <span class="n">max</span> <span class="p">=</span> <span class="m">10</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"max = $max"</span><span class="p">)</span>
 
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kd">val</span> <span class="py">coco</span> <span class="p">=</span> <span class="n">Bird</span><span class="p">(</span><span class="s">"mybird"</span><span class="p">,</span><span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
-
-    <span class="n">coco</span><span class="p">.</span><span class="n">color</span><span class="p">=</span><span class="s">"yellow"</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"cooc.color: ${coco.color}"</span><span class="p">)</span>
-    <span class="n">coco</span><span class="p">.</span><span class="n">fly</span><span class="p">()</span>
-    <span class="n">coco</span><span class="p">.</span><span class="n">sing</span><span class="p">(</span><span class="m">3</span><span class="p">)</span>
-  <span class="p">}</span>
+    <span class="n">max</span> <span class="p">=</span> <span class="m">5</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"max = $max"</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre></div></div>
 <blockquote>
-  <p>———-초기화 블록 시작———-<br />
-이름은 mybird, 부리는 short<br />
-Sing vol: 3<br />
-———-초기화 블록 끝———-<br />
-cooc.color: yellow<br />
-Fly wing: 2<br />
-Sing vol: 3</p>
+  <p>NONAME -&gt; Kildong<br />
+Kildong -&gt; Dooly<br />
+max = 0<br />
+max = 10<br />
+max = 10</p>
 </blockquote>
-
-<p><br />
-클래스 생성 시 init 블록이 처리되는 것을 확인할 수 있습니다. 클래스 옆에 생성자가 있고, 명확히 구분 되므로 더 가독성있는 코드를 만들 수 있습니다.</p>
 
 <hr />
 
-<h2 id="클래스-상속">클래스 상속</h2>
-<p>코틀린의 모든 클래스는 묵시적으로 Any 클래스로부터 상속을 받습니다. 상속에 있어서는 <strong>open</strong> 키워드를 알아야 합니다. 클래스 앞에 open 키워드를 붙이면 상속할 수 있는 클래스로 선언하고 open 키워드가 없으면 상속할 수 없는 클래스 입니다. 다음을 보면 쉽게 이해할 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">open</span> <span class="kd">class</span> <span class="nc">Bird</span> <span class="p">(</span><span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="kd">class</span> <span class="nc">Lark</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">wing</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="nv">beak</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="nc">String</span><span class="p">)</span> <span class="p">:</span> <span class="nc">Bird</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wing</span><span class="p">,</span> <span class="n">beak</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">fun</span> <span class="nf">singHiton</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Happly Song!"</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="kd">class</span> <span class="nc">Parrot</span> <span class="p">:</span> <span class="n">Bird</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="py">language</span><span class="p">:</span> <span class="n">String</span>
-
-    <span class="k">constructor</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">wing</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="nv">beak</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">language</span><span class="p">:</span> <span class="nc">String</span><span class="p">)</span> <span class="p">:</span> <span class="nc">super</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wing</span><span class="p">,</span> <span class="n">beak</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="n">language</span> <span class="p">=</span> <span class="n">language</span>
+<h2 id="companion-객체">Companion 객체</h2>
+<p>lateinit은 이름 그대로 정의를 늦게 하는 것입니다. 다른 자원이 정의 된 뒤 처리를 해야하거나, 정의되어야 할 시점이 뒤늦게 있을 경우 lateinit 심볼을 이용해서 정의를 뒤로 미룰 수 있습니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Person</span> <span class="p">{</span>
+    <span class="k">lateinit</span> <span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span>
+    <span class="k">fun</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(!</span><span class="o">::</span><span class="n">name</span><span class="p">.</span><span class="n">isInitialized</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">println</span><span class="p">(</span><span class="s">"not initialized"</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">println</span><span class="p">(</span><span class="s">"initialized"</span><span class="p">)</span>
+      <span class="p">}</span>
     <span class="p">}</span>
+  <span class="p">}</span>
 
-    <span class="k">fun</span> <span class="nf">speak</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Speak: $language"</span><span class="p">)</span>
- <span class="p">}</span>
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kd">val</span> <span class="py">coco</span> <span class="p">=</span> <span class="n">Bird</span><span class="p">(</span><span class="s">"mybird"</span><span class="p">,</span><span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
-    <span class="kd">val</span> <span class="py">lark</span> <span class="p">=</span> <span class="n">Lark</span><span class="p">(</span><span class="s">"mylark"</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s">"long"</span><span class="p">,</span> <span class="s">"brown"</span><span class="p">)</span>
-    <span class="kd">val</span> <span class="py">parrot</span> <span class="p">=</span> <span class="n">Parrot</span><span class="p">(</span><span class="s">"myparrot"</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"multiple"</span><span class="p">,</span> <span class="s">"korean"</span><span class="p">)</span>
-
-    <span class="n">println</span><span class="p">(</span><span class="s">"Coco: ${coco.name}, ${coco.wing}, ${coco.beak}, ${coco.color}"</span><span class="p">)</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"Lark: ${lark.name}, ${lark.wing}, ${lark.beak}, ${lark.color}"</span><span class="p">)</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"Parrot: ${parrot.name}, ${parrot.wing}, ${parrot.beak}, ${parrot.color}, ${parrot.language}"</span><span class="p">)</span>
-    <span class="n">lark</span><span class="p">.</span><span class="n">singHiton</span><span class="p">()</span>
-    <span class="n">parrot</span><span class="p">.</span><span class="n">speak</span><span class="p">()</span>
-    <span class="n">lark</span><span class="p">.</span><span class="n">fly</span><span class="p">()</span>
+  <span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">kildong</span> <span class="p">=</span> <span class="n">Person</span><span class="p">()</span>
+    <span class="n">kildong</span><span class="p">.</span><span class="n">test</span><span class="p">()</span>
+    <span class="n">kildong</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="s">"Kildong"</span>
+    <span class="n">kildong</span><span class="p">.</span><span class="n">test</span><span class="p">()</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"name = ${kildong.name}"</span><span class="p">)</span>
   <span class="p">}</span>
 </code></pre></div></div>
 <blockquote>
-  <p>Coco: mybird, 2, short, blue<br />
-Lark: mylark, 2, long, brown<br />
-Parrot: myparrot, 2, short, multiple, korean<br />
-Happly Song!<br />
-Speak: korean<br />
-Fly wing: 2</p>
+  <p>not initialized
+initialized
+name = Kildong</p>
 </blockquote>
 
-<p>open 키워드를 통해 Bird클래스를 상속 가능하게 해주고 변수 인자를 주듯이 Bird를 주어 상속받도록 하였습니다. 상속을 받았기 때문에 lark.fly() 시 Bird의 fly()가 호출되는 것을 확인하였습니다. 그리고 open 키워드는 클래스 말고도 다형성을 위해 오버라이딩 할 때도 사용할 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">open</span> <span class="kd">class</span> <span class="nc">Bird</span> <span class="p">(</span><span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
+<p><br />
+처음 test()호출 시 not initialized를 출력하고 두 번째 호출 시 initialized를 호출합니다. 여기서 isInitialized는 코틀린의 표준 함수 API이며 프로퍼티 참조를 위해 콜른::를 사용한 것입니다. lateinit은 다음과 같은 특징이 있습니다.</p>
+<ul>
+  <li>var로 선언된 프로퍼티만 가능하다.</li>
+  <li>프로퍼티에 대한 게터와 세터를 사용할 수 없다.</li>
+</ul>
 
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">open</span> <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="kd">class</span> <span class="nc">Parrot</span> <span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">wing</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="nv">beak</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">language</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">:</span> <span class="nc">Bird</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wing</span><span class="p">,</span> <span class="n">beak</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="k">fun</span> <span class="nf">speak</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Speak: $language"</span><span class="p">)</span>
-    <span class="k">override</span> <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">println</span><span class="p">(</span><span class="s">"I'm a parrot! The volume level is $vol"</span><span class="p">)</span>
+<p>lateinit은 var로 선언된 프로퍼티만 가능합니다. 또한, 클래스에도 클래스 타입의 var프로퍼티가 존재할 경우 적용할 수 있습니다.
+만약 val로 선언된 프로퍼티에 사용하려면 어떻게 해야할까요? lazy를 사용하면 됩니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">lazyTest</span> <span class="p">{</span>
+    <span class="n">init</span> <span class="p">{</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">"init block"</span><span class="p">)</span>
     <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kd">val</span> <span class="py">coco</span> <span class="p">=</span> <span class="n">Bird</span><span class="p">(</span><span class="s">"mybird"</span><span class="p">,</span><span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
-    <span class="kd">val</span> <span class="py">parrot</span> <span class="p">=</span> <span class="n">Parrot</span><span class="p">(</span><span class="s">"myparrot"</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"multiple"</span><span class="p">,</span> <span class="s">"korean"</span><span class="p">)</span>
 
-    <span class="n">println</span><span class="p">(</span><span class="s">"Parrot: ${parrot.name}, ${parrot.wing}, ${parrot.beak}, ${parrot.color}, ${parrot.language}"</span><span class="p">)</span>
-    <span class="n">parrot</span><span class="p">.</span><span class="n">sing</span><span class="p">(</span><span class="m">5</span><span class="p">)</span>
-    <span class="n">parrot</span><span class="p">.</span><span class="n">speak</span><span class="p">()</span>
-  <span class="p">}</span>
+    <span class="kd">val</span> <span class="py">subject</span> <span class="k">by</span> <span class="n">lazy</span> <span class="p">{</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">"lazy initialized"</span><span class="p">)</span>
+        <span class="s">"Kotlin Programing"</span>
+    <span class="p">}</span>
+    <span class="k">fun</span> <span class="nf">flow</span><span class="p">(){</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">"not initialized"</span><span class="p">)</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">"subject one: $subject"</span><span class="p">)</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">"subject two: $subject"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">test</span> <span class="p">=</span> <span class="n">lazyTest</span><span class="p">()</span>
+    <span class="n">test</span><span class="p">.</span><span class="n">flow</span><span class="p">()</span>
+<span class="p">}</span>
 </code></pre></div></div>
 <blockquote>
-  <p>Parrot: myparrot, 2, short, multiple, korean<br />
-I’m a parrot! The volume level is 5<br />
-Speak: korean</p>
+  <p>init block
+not initialized
+lazy initialized
+subject one: Kotlin Programing
+subject two: Kotlin Programing</p>
 </blockquote>
+
+<p><br />
+출력 결과를 보면, subject 바로 초기화 되지않고, subject one 호출 시 초기화 되었습니다. 여기서 by lazy를 사용하였는데요, by lazy는 람다식 형태 입니다. by에 의해서 subject는 lazy를 위임 받았습니다. 여기서 핵심은 접근하는 시점에 프로퍼티가 초기화 되었다는 것입니다. lazy의 특성을 정리하면 다음과 같습니다.</p>
+<ul>
+  <li>호출 시점에 by lazy{…} 정의에 의해 블록 부분의 초기화를 진행한다.</li>
+  <li>불변의 변수 선언인 val에서만 사용 가능하다.(읽기전용)</li>
+  <li>val이므로 값을 다시 변경할 수 없다.</li>
+</ul>
 
 <hr />
 
 <h2 id="마치며">마치며</h2>
-<p>이제 객체 들어왔습니다. 다음 단원은 프로퍼티던데요. 열심히 공부해서 준비하겠습니다. 읽어주셔서 감사합니다.</p>
+<p>오늘은 프로퍼티에 대해서 알아보았습니다. 프로퍼티에 들어오면서 점점 처음 보는 것들이 늘어납니다. 오늘 by를 잠시 언급했었는데요, 다음주에는 by에 대해서 더 알아보겠습니다.</p>
 
 
 					<div class="post-share">
 						<ul class="share-list list-reset">
 							<li class="share-item">
-								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/class-Kotlin/"
+								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/property-Kotlin-2/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Facebook" rel="nofollow">
 									<i class="ion ion-logo-facebook"></i>
@@ -341,7 +333,7 @@ Speak: korean</p>
 							</li>
 					
 							<li class="share-item">
-								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%81%B4%EB%9E%98%EC%8A%A4%20-5-&url=http://192.168.219.102:4000/class-Kotlin/"
+								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%94%84%EB%A1%9C%ED%8D%BC%ED%8B%B0(2)%20-7-&url=http://192.168.219.102:4000/property-Kotlin-2/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Twitter" rel="nofollow">
 									<i class="ion ion-logo-twitter"></i>
@@ -349,7 +341,7 @@ Speak: korean</p>
 							</li>
 					
 							<li class="share-item">
-								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/class-Kotlin/&title=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%81%B4%EB%9E%98%EC%8A%A4%20-5-&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
+								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/property-Kotlin-2/&title=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%94%84%EB%A1%9C%ED%8D%BC%ED%8B%B0(2)%20-7-&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on LinkedIn" rel="nofollow">
 									<i class="ion ion-logo-linkedin"></i>
@@ -357,7 +349,7 @@ Speak: korean</p>
 							</li>
 					
 							<li class="share-item">
-								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/class-Kotlin/&amp;media=http://192.168.219.102:4000/img/Kotlin-logo.png&amp;description=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%81%B4%EB%9E%98%EC%8A%A4%20-5-"
+								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/property-Kotlin-2/&amp;media=http://192.168.219.102:4000/img/Kotlin-logo.png&amp;description=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%94%84%EB%A1%9C%ED%8D%BC%ED%8B%B0(2)%20-7-"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Pinterest" rel="nofollow">
 									<i class="ion ion-logo-pinterest"></i>
@@ -369,16 +361,11 @@ Speak: korean</p>
 
 				<div class="post-navigation">
 					
-					<a href="/loop-condition-Kotlin/" class="prev">
+					<a href="/property-Kotlin/" class="prev">
 						<div class="post-nav-arrow"><i class="ion ion-ios-arrow-round-back"></i> Previous Article</div>
-						<h2 class="post-nav-title">코틀린(Kotlin) 조건문 반복문 -4-</h2>
-					</a>
-					 
-					<a href="/property-Kotlin/" class="next">
-						<div class="post-nav-arrow">Next Article <i class="ion ion-ios-arrow-round-forward"></i></div>
 						<h2 class="post-nav-title">코틀린(Kotlin) 프로퍼티(1) -6-</h2>
 					</a>
-					
+					 
 				</div>
 
 			</div>
