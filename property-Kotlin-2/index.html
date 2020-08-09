@@ -244,82 +244,82 @@ max = 10</p>
 <hr />
 
 <h2 id="companion-객체">Companion 객체</h2>
-<p>lateinit은 이름 그대로 정의를 늦게 하는 것입니다. 다른 자원이 정의 된 뒤 처리를 해야하거나, 정의되어야 할 시점이 뒤늦게 있을 경우 lateinit 심볼을 이용해서 정의를 뒤로 미룰 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Person</span> <span class="p">{</span>
-    <span class="k">lateinit</span> <span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span>
-    <span class="k">fun</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">if</span><span class="p">(!</span><span class="o">::</span><span class="n">name</span><span class="p">.</span><span class="n">isInitialized</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">"not initialized"</span><span class="p">)</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">"initialized"</span><span class="p">)</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
+<p>코틀린에서는 정적 변수를 사용할 때 static 키워드가 없는 대신 컴패니언 객체를 사용합니다. 정적 변수의 경우는 객체를 생성 없이도 접근할 수 있는 특징이 있습니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Person</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="py">id</span><span class="p">:</span> <span class="n">Int</span> <span class="p">=</span> <span class="m">0</span>
+    <span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">"Youngdeok"</span>
 
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="py">kildong</span> <span class="p">=</span> <span class="n">Person</span><span class="p">()</span>
-    <span class="n">kildong</span><span class="p">.</span><span class="n">test</span><span class="p">()</span>
-    <span class="n">kildong</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="s">"Kildong"</span>
-    <span class="n">kildong</span><span class="p">.</span><span class="n">test</span><span class="p">()</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"name = ${kildong.name}"</span><span class="p">)</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<blockquote>
-  <p>not initialized
-initialized
-name = Kildong</p>
-</blockquote>
-
-<p><br />
-처음 test()호출 시 not initialized를 출력하고 두 번째 호출 시 initialized를 호출합니다. 여기서 isInitialized는 코틀린의 표준 함수 API이며 프로퍼티 참조를 위해 콜른::를 사용한 것입니다. lateinit은 다음과 같은 특징이 있습니다.</p>
-<ul>
-  <li>var로 선언된 프로퍼티만 가능하다.</li>
-  <li>프로퍼티에 대한 게터와 세터를 사용할 수 없다.</li>
-</ul>
-
-<p>lateinit은 var로 선언된 프로퍼티만 가능합니다. 또한, 클래스에도 클래스 타입의 var프로퍼티가 존재할 경우 적용할 수 있습니다.
-만약 val로 선언된 프로퍼티에 사용하려면 어떻게 해야할까요? lazy를 사용하면 됩니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">lazyTest</span> <span class="p">{</span>
-    <span class="n">init</span> <span class="p">{</span>
-        <span class="n">println</span><span class="p">(</span><span class="s">"init block"</span><span class="p">)</span>
-    <span class="p">}</span>
-
-    <span class="kd">val</span> <span class="py">subject</span> <span class="k">by</span> <span class="n">lazy</span> <span class="p">{</span>
-        <span class="n">println</span><span class="p">(</span><span class="s">"lazy initialized"</span><span class="p">)</span>
-        <span class="s">"Kotlin Programing"</span>
-    <span class="p">}</span>
-    <span class="k">fun</span> <span class="nf">flow</span><span class="p">(){</span>
-        <span class="n">println</span><span class="p">(</span><span class="s">"not initialized"</span><span class="p">)</span>
-        <span class="n">println</span><span class="p">(</span><span class="s">"subject one: $subject"</span><span class="p">)</span>
-        <span class="n">println</span><span class="p">(</span><span class="s">"subject two: $subject"</span><span class="p">)</span>
+    <span class="k">companion</span> <span class="k">object</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="py">language</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">"Korean"</span>
+        <span class="k">fun</span> <span class="nf">work</span><span class="p">()</span> <span class="p">{</span>
+            <span class="n">println</span><span class="p">(</span><span class="s">"working..."</span><span class="p">)</span>
+        <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="py">test</span> <span class="p">=</span> <span class="n">lazyTest</span><span class="p">()</span>
-    <span class="n">test</span><span class="p">.</span><span class="n">flow</span><span class="p">()</span>
+    <span class="n">println</span><span class="p">(</span><span class="n">Person</span><span class="p">.</span><span class="n">language</span><span class="p">)</span>
+    <span class="n">Person</span><span class="p">.</span><span class="n">language</span> <span class="p">=</span> <span class="s">"English"</span>
+    <span class="n">println</span><span class="p">(</span><span class="n">Person</span><span class="p">.</span><span class="n">language</span><span class="p">)</span>
+    <span class="n">Person</span><span class="p">.</span><span class="n">work</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre></div></div>
 <blockquote>
-  <p>init block
-not initialized
-lazy initialized
-subject one: Kotlin Programing
-subject two: Kotlin Programing</p>
+  <p>Korean<br />
+English<br />
+working…</p>
 </blockquote>
 
 <p><br />
-출력 결과를 보면, subject 바로 초기화 되지않고, subject one 호출 시 초기화 되었습니다. 여기서 by lazy를 사용하였는데요, by lazy는 람다식 형태 입니다. by에 의해서 subject는 lazy를 위임 받았습니다. 여기서 핵심은 접근하는 시점에 프로퍼티가 초기화 되었다는 것입니다. lazy의 특성을 정리하면 다음과 같습니다.</p>
-<ul>
-  <li>호출 시점에 by lazy{…} 정의에 의해 블록 부분의 초기화를 진행한다.</li>
-  <li>불변의 변수 선언인 val에서만 사용 가능하다.(읽기전용)</li>
-  <li>val이므로 값을 다시 변경할 수 없다.</li>
-</ul>
+객체 생성 없이 사용되는 companion object를 확인하였습니다. 만약 자바와 연동해서 사용하려면 정적 변수나 메소드를 접근해야하는데, 이 경우는 애노테이션 @JvmStatic을 붙여서 사용한다고 하면 됩니다.<em>(코틀린에서 자바로 접근하는 경우만 사용 반대의 경우는 그냥 접근 가능합니다.)</em> 여기서는 귀찮기도 하고… 다루지 않겠습니다.<br />
+object 키워드의 경우 클래스를 새로 생성하지 않고, 객체를 생성하고 싶을 때 사용하는 키워드 입니다. 자바의 익명 내부 클래스 처럼 새로운 클래스 선언을 하지 않고, 변형된 객체를 생성하기 위함 입니다. 자바에서 이 객체를 접근하려면 INSTANCE 키워드를 사용하여 접근 합니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">object</span> <span class="nc">OCustomer</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="py">name</span> <span class="p">=</span> <span class="s">"Kildong"</span>
+    <span class="k">fun</span> <span class="nf">greeting</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Hello World!"</span><span class="p">)</span>
+    <span class="kd">val</span> <span class="py">HOBBY</span> <span class="p">=</span> <span class="n">Hobby</span><span class="p">(</span><span class="s">"basketball"</span><span class="p">)</span>
+    <span class="n">init</span> <span class="p">{</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">"Init!"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">CCustomer</span> <span class="p">{</span>
+    <span class="k">companion</span> <span class="k">object</span> <span class="p">{</span>
+        <span class="k">const</span> <span class="kd">val</span> <span class="py">HELLO</span> <span class="p">=</span> <span class="s">"hello"</span>
+        <span class="kd">var</span> <span class="py">name</span> <span class="p">=</span> <span class="s">"Joosol"</span>
+        <span class="nd">@JvmField</span> <span class="kd">val</span> <span class="py">HOBBY</span> <span class="p">=</span> <span class="n">Hobby</span><span class="p">(</span><span class="s">"Football"</span><span class="p">)</span>
+        <span class="nd">@JvmStatic</span> <span class="k">fun</span> <span class="nf">greeting</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Hello World!"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">Hobby</span><span class="p">(</span><span class="kd">val</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span>
+
+<span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">OCustomer</span><span class="p">.</span><span class="n">greeting</span><span class="p">()</span>
+    <span class="n">OCustomer</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="s">"Dooly"</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"name = ${OCustomer.name}"</span><span class="p">)</span>
+    <span class="n">println</span><span class="p">(</span><span class="n">OCustomer</span><span class="p">.</span><span class="n">HOBBY</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="n">CCustomer</span><span class="p">.</span><span class="n">greeting</span><span class="p">()</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"name = ${CCustomer.name}, HELLO = ${CCustomer.HELLO}"</span><span class="p">)</span>
+    <span class="n">println</span><span class="p">(</span><span class="n">CCustomer</span><span class="p">.</span><span class="n">HOBBY</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<blockquote>
+  <p>Init!<br />
+Hello World!<br />
+name = Dooly<br />
+basketball<br />
+Hello World!<br />
+name = Joosol, HELLO = hello<br />
+Football</p>
+</blockquote>
+
+<p>@JvmFeild의 경우는 java에서 프로퍼티를 사용하고 싶을 경우 사용하는 애노테이션 입니다. object의 경우 호출 시 생성 되는 것을 확인할 수 있습니다.</p>
 
 <hr />
 
 <h2 id="마치며">마치며</h2>
-<p>오늘은 프로퍼티에 대해서 알아보았습니다. 프로퍼티에 들어오면서 점점 처음 보는 것들이 늘어납니다. 오늘 by를 잠시 언급했었는데요, 다음주에는 by에 대해서 더 알아보겠습니다.</p>
+<p>읽어주셔서 감사합니다.</p>
 
 
 					<div class="post-share">
@@ -366,6 +366,11 @@ subject two: Kotlin Programing</p>
 						<h2 class="post-nav-title">코틀린(Kotlin) 프로퍼티(1) -6-</h2>
 					</a>
 					 
+					<a href="/abstract-class-Kotlin/" class="next">
+						<div class="post-nav-arrow">Next Article <i class="ion ion-ios-arrow-round-forward"></i></div>
+						<h2 class="post-nav-title">코틀린(Kotlin) 추상클래스 -8-</h2>
+					</a>
+					
 				</div>
 
 			</div>
@@ -393,6 +398,20 @@ subject two: Kotlin Programing</p>
   
   <div class="widget widget-recent">
     <h3 class="widget-title">Recent Posts</h3>
+    
+    <div class="recent-posts">
+      
+      <div class="recent-header">
+        <a class="recent-image" href="/abstract-class-Kotlin/" style="background-image: url(/img/Kotlin-logo.png)"></a>
+      </div>
+      
+      <div class="recent-content">
+        <h6 class="recent-title"><a href="/abstract-class-Kotlin/">코틀린(Kotlin) 추상클래스 -8-</a></h6>
+        <div class="recent-date">
+          <time datetime="2020-08-09T22:30:22+09:00">August 9, 2020</time>
+        </div>
+      </div>
+    </div>
     
     <div class="recent-posts">
       
@@ -432,20 +451,6 @@ subject two: Kotlin Programing</p>
         <h6 class="recent-title"><a href="/class-Kotlin/">코틀린(Kotlin) 클래스 -5-</a></h6>
         <div class="recent-date">
           <time datetime="2020-07-19T14:30:22+09:00">July 19, 2020</time>
-        </div>
-      </div>
-    </div>
-    
-    <div class="recent-posts">
-      
-      <div class="recent-header">
-        <a class="recent-image" href="/loop-condition-Kotlin/" style="background-image: url(/img/Kotlin-logo.png)"></a>
-      </div>
-      
-      <div class="recent-content">
-        <h6 class="recent-title"><a href="/loop-condition-Kotlin/">코틀린(Kotlin) 조건문 반복문 -4-</a></h6>
-        <div class="recent-date">
-          <time datetime="2020-07-12T09:20:22+09:00">July 12, 2020</time>
         </div>
       </div>
     </div>
