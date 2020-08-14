@@ -6,10 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>코틀린(Kotlin) 함수 -3-</title>
+  <title>코틀린(Kotlin) 인터페이스 -9-</title>
   <meta name='description' content='These story for everything such as Life, develop and daily.'>
 
-  <link rel="canonical" href="http://192.168.219.102:4000/function-Kotlin/">
+  <link rel="canonical" href="http://192.168.219.102:4000/interface-class-Kotlin/">
   <link rel="alternate" type="application/rss+xml" title="Mike Chu&#39;s Story | Thank you for visiting." href="/feed.xml">
 
   <!-- Google Font -->
@@ -143,7 +143,7 @@
 						
 					</div>
 					
-					<h1 class="post-title">코틀린(Kotlin) 함수 -3-</h1>
+					<h1 class="post-title">코틀린(Kotlin) 인터페이스 -9-</h1>
 					<div class="post-info">
 						<div class="post-info-author">
 							<div class="info-author-avatar" style="background-image: url(/img/mike.chu.jpg)"></div>
@@ -152,7 +152,7 @@
 						</div>
 						<div class="post-date">
 							<span>
-								<time datetime="2020-07-05T21:50:22+09:00">Jul 05, 2020</time>
+								<time datetime="2020-08-15T05:20:22+09:00">Aug 15, 2020</time>
 							</span>
 						</div>
 					</div>
@@ -160,69 +160,91 @@
 
 				<div class="post-body">
 					<h2 id="overview">Overview</h2>
-<p>오늘은 변수에 이어 함수에 대해서 알아보겠습니다. 함수에서는 코틀린에서의 함수구조, 그리고 코틀린 만의 특별한 기법들을 소개하겠습니다. 개인적으로 학습을 하면서 코틀린은 간결하게 표현을 할 수 있겠구나를 많이 느꼈습니다. 어떤 점에서 느꼈는지 제가 잘 전달 할 수 있으면 좋겠지만, 일단 같이 살펴보죠!<br />
+<p>지난시간 추상클래스에 이어서 인터페이스를 다루겠습니다.<br />
 <span style="color: grey"><em>이 글은 “Do it! 코틀린 프로그래밍”을 읽으면서 작성되었습니다.</em></span><br />
 <br />
-<a href="#함수의-구조">1. 함수의 구조</a><br />
-<a href="#고차함수와-람다식">2. 고차함수와 람다식</a><br />
-<a href="#마치며">3. 마치며</a></p>
+<a href="#인터페이스">1. 인터페이스</a><br />
+<a href="#마치며">2. 마치며</a></p>
 
 <hr />
 
-<h2 id="함수의-구조">함수의 구조</h2>
-<p>덧셈 함수를 간단하게 표현하여 코틀린이 얼마나 함수를 간결하게 표현할 수 있는지 우선 살펴보겠습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">fun</span> <span class="nf">sum</span><span class="p">(</span><span class="nv">a</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="n">Int</span><span class="p">):</span> <span class="nc">Int</span><span class="p">{</span>
-    <span class="k">return</span> <span class="n">a</span><span class="p">+</span><span class="n">b</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<p><br />
-코틀린에서는 <strong>fun 함수이름([변수 이름: 자료형, 변수 이름: 자료형 ..]):[반환값의 자료형]{ 표현식… }</strong>으로 함수를 표현합니다.<br />
-만약 위의 식과 같이 코드가 한줄이라면 중괄호와 return문을 생략할 수 있습니다. 그러면 아래와 같이 더 간결해질 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">fun</span> <span class="nf">sum</span><span class="p">(</span><span class="nv">a</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="n">Int</span><span class="p">):</span> <span class="nc">Int</span> <span class="p">=</span> <span class="n">a</span><span class="p">+</span><span class="n">b</span>
-</code></pre></div></div>
-<p><br />
-여기서 더 간결해질 수 있습니다. 자료형이 인자와 같기 때문에 자료형까지 생략이 가능합니다. 간단한 API를 구현할 때 코틀린을 이용하면 아주 간결하게 표현이 가능힙니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">fun</span> <span class="nf">sum</span><span class="p">(</span><span class="nv">a</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="n">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">a</span><span class="p">+</span><span class="n">b</span>
-</code></pre></div></div>
+<h2 id="인터페이스">인터페이스</h2>
+<p>인터페이스는 추상클래스와 비슷하지만 인터페이스는 클래스가 아닙니다. 따라서 클래스가 여러 인터페이스를 상속받을 수 있습니다. 이러한 점 때문에 인터페이스를 가져다 씁니다. 코틀린에서는 인터페이스에서 추상메소드 뿐만 아니라 일반메소드도 정의할 수 있습니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">Pet</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="py">category</span><span class="p">:</span><span class="n">String</span>
+    <span class="k">fun</span> <span class="nf">feeding</span><span class="p">()</span>
+    <span class="k">fun</span> <span class="nf">petting</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">"Keep petting!"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-<hr />
+<span class="kd">class</span> <span class="nc">Cat</span><span class="p">(</span><span class="k">override</span> <span class="kd">var</span> <span class="py">category</span><span class="p">:</span> <span class="n">String</span><span class="p">):</span> <span class="nc">Pet</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">feeding</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">"Feed the cat a tuna can"</span><span class="p">)</span>
+    <span class="p">}</span>
 
-<h2 id="고차함수와-람다식">고차함수와 람다식</h2>
-<p>이번에는 람다식을 소개하겠습니다. 람다식은 수학에서 말하는 람다대수에서 유래하여 이름이 없는 함수로 2개 이상의 입력을 1개의 출력으로 단수화 한다는 개념에서 유래한 것으로 다음과 같은 형태입니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">-&gt;</span> <span class="n">x</span> <span class="p">+</span> <span class="n">y</span> <span class="p">}</span>
-</code></pre></div></div>
-<p><br />
-람다식을 이용하면 다음과 같은 함수 구현이 가능합니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">println</span><span class="p">(</span><span class="n">highFunc</span><span class="p">({</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">-&gt;</span> <span class="n">x</span> <span class="p">+</span> <span class="n">y</span><span class="p">},</span> <span class="m">10</span> <span class="p">,</span><span class="m">20</span><span class="p">))</span> <span class="c1">//람다식을 인자로 넘김</span>
-  <span class="p">}</span>
+<span class="p">}</span>
 
-  <span class="k">fun</span> <span class="nf">highFunc</span><span class="p">(</span><span class="n">sum</span><span class="p">:</span> <span class="p">(</span><span class="n">Int</span><span class="p">,</span> <span class="n">Int</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Int</span><span class="p">,</span> <span class="nv">a</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="nv">b</span><span class="p">:</span> <span class="nc">Int</span><span class="p">):</span> <span class="nc">Int</span> <span class="p">=</span> <span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="c1">// 매개함수 sum을 리턴하는 함수</span>
+<span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">obj</span> <span class="p">=</span> <span class="n">Cat</span><span class="p">(</span><span class="s">"small"</span><span class="p">)</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"Pet categiry : ${obj.category}"</span><span class="p">)</span>
+    <span class="n">obj</span><span class="p">.</span><span class="n">feeding</span><span class="p">()</span>
+    <span class="n">obj</span><span class="p">.</span><span class="n">petting</span><span class="p">()</span>
+<span class="p">}</span>
 </code></pre></div></div>
+<blockquote>
+  <p>Pet categiry : small<br />
+Feed the cat a tuna can<br />
+Keep petting!</p>
+</blockquote>
+
 <p><br />
-위 함수 중 <em>highFunc</em>을 살펴보면, sum이라는 인자가 람다식 꼴로 되어 있습니다. 이렇게 되면 매개변수로 함수를 받아 사용할 수 있습니다.이런 함수를 고차함수라고 합니다. 즉 함수를 매개변수로 하거나 리턴을 하는 함수를 고차함수라고 합니다. 함수를 매개변수로 받을 수 있으니, 사칙연산을 구현하더라도 같은 꼴로 구현을 할 수 있습니다. 이렇게 되면 여러표현을 더 간결하게 표현할 수 있습니다.</p>
+인터페이스는 일반메소드를 정의해주면 stub시 따로 추가로 정의하지 않아도 됩니다. JAVA8부터는 default prefix로 구분을 하는데 코틀린은 명시할 필요없이 자동으로 됩니다. 더 편리하고 간단하다고 말씀 드릴 수 있습니다. Cat을 보면 콜론을 통해서 Pet을 가져왔는데 상속을 받았다고 보면 됩니다.</p>
+
+<p>인터페이스 위임은 다음과 같이 표현됩니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">Nameable</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">StaffName</span> <span class="p">:</span> <span class="n">Nameable</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">"Sean"</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">Work</span> <span class="p">:</span> <span class="n">Runnable</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">"work....."</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">Person</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">Nameable</span><span class="p">,</span> <span class="nv">work</span><span class="p">:</span> <span class="nc">Runnable</span><span class="p">):</span> <span class="nc">Nameable</span> <span class="k">by</span> <span class="n">name</span><span class="p">,</span> <span class="n">Runnable</span> <span class="k">by</span> <span class="n">work</span>
+
+<span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">person</span> <span class="p">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">StaffName</span><span class="p">(),</span><span class="n">Work</span><span class="p">())</span>
+    <span class="n">println</span><span class="p">(</span><span class="n">person</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">person</span><span class="p">.</span><span class="n">run</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<blockquote>
+  <p>Sean<br />
+work…..</p>
+</blockquote>
+
+<p><br />
+위임을 통해 상속을 받으면 코드를 더 간결하게 표현할 수 있습니다. 만약 위임이 없었다면, 다음과 같이 접근해야 합니다.<br />
+person.Nameable.name, person.Runnable.run()<br />
+또한 위임을 통해 여러 인터페이스를 상속받은 클래스로부터 특정 인터페이스 영역만 상속받을 수 있습니다.</p>
 
 <hr />
 
 <h2 id="마치며">마치며</h2>
-<p>코틀린의 함수 표현을 간단하게 살표보았는데, 아주 간결하게 표현가능할 수 있는 것을 확인하였습니다. 이외에도 익명함수, 인라인 함수, 확장함수, 중위 함수 등이 있는데 코틀린은 다양한 방법으로 간결하게 구현할 수 있습니다. 이는 강력한 코틀린의 장점이라고 생각합니다.</p>
-
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//확장 함수</span>
-<span class="k">fun</span> <span class="nc">String</span><span class="p">.</span><span class="nf">getLongString</span><span class="p">(</span><span class="nv">target</span><span class="p">:</span> <span class="nc">String</span><span class="p">):</span> <span class="nc">String</span> <span class="p">=</span> <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">length</span> <span class="p">&gt;</span> <span class="n">target</span><span class="p">.</span><span class="n">length</span><span class="p">)</span> <span class="k">this</span> <span class="k">else</span> <span class="n">target</span>
-
-  <span class="n">println</span><span class="p">(</span><span class="s">"Hello, World"</span><span class="p">.</span><span class="n">getLongString</span><span class="p">(</span><span class="s">"Kotlin"</span><span class="p">))</span> <span class="c1">//확장 함수 사용</span>
-
-<span class="c1">//중위 함수</span>
-<span class="k">infix</span> <span class="k">fun</span> <span class="nf">Int</span><span class="p">,</span><span class="n">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="n">Int</span><span class="p">):</span> <span class="nc">Int</span> <span class="p">=</span> <span class="k">this</span> <span class="p">*</span> <span class="n">x</span>
-
-  <span class="kd">val</span> <span class="py">multi</span> <span class="p">=</span> <span class="m">3</span> <span class="n">multiply</span> <span class="m">10</span>  <span class="c1">//중위 함수 사용</span>
-</code></pre></div></div>
+<p>인터페이스까지 마쳤는데, 나머지 클래스들은 다음 포스팅에서 다루고 그다음부터는 코틀린 표준 라이브러리를 다룰 예정입니다.<br />
+읽어주셔서 감사합니다.</p>
 
 
 					<div class="post-share">
 						<ul class="share-list list-reset">
 							<li class="share-item">
-								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/function-Kotlin/"
+								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/interface-class-Kotlin/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Facebook" rel="nofollow">
 									<i class="ion ion-logo-facebook"></i>
@@ -230,7 +252,7 @@
 							</li>
 					
 							<li class="share-item">
-								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%95%A8%EC%88%98%20-3-&url=http://192.168.219.102:4000/function-Kotlin/"
+								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4%20-9-&url=http://192.168.219.102:4000/interface-class-Kotlin/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Twitter" rel="nofollow">
 									<i class="ion ion-logo-twitter"></i>
@@ -238,7 +260,7 @@
 							</li>
 					
 							<li class="share-item">
-								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/function-Kotlin/&title=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%95%A8%EC%88%98%20-3-&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
+								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/interface-class-Kotlin/&title=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4%20-9-&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on LinkedIn" rel="nofollow">
 									<i class="ion ion-logo-linkedin"></i>
@@ -246,7 +268,7 @@
 							</li>
 					
 							<li class="share-item">
-								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/function-Kotlin/&amp;media=http://192.168.219.102:4000/img/Kotlin-logo.png&amp;description=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%95%A8%EC%88%98%20-3-"
+								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/interface-class-Kotlin/&amp;media=http://192.168.219.102:4000/img/Kotlin-logo.png&amp;description=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4%20-9-"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Pinterest" rel="nofollow">
 									<i class="ion ion-logo-pinterest"></i>
@@ -258,16 +280,11 @@
 
 				<div class="post-navigation">
 					
-					<a href="/variable-Kotlin/" class="prev">
+					<a href="/abstract-class-Kotlin/" class="prev">
 						<div class="post-nav-arrow"><i class="ion ion-ios-arrow-round-back"></i> Previous Article</div>
-						<h2 class="post-nav-title">코틀린(Kotlin) 변수 -2-</h2>
+						<h2 class="post-nav-title">코틀린(Kotlin) 추상클래스 -8-</h2>
 					</a>
 					 
-					<a href="/loop-condition-Kotlin/" class="next">
-						<div class="post-nav-arrow">Next Article <i class="ion ion-ios-arrow-round-forward"></i></div>
-						<h2 class="post-nav-title">코틀린(Kotlin) 조건문 반복문 -4-</h2>
-					</a>
-					
 				</div>
 
 			</div>
