@@ -6,10 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>코틀린(Kotlin) 클래스 -5-</title>
+  <title>Windows git server 셋팅(Bonobo Git)</title>
   <meta name='description' content='These story for everything such as Life, develop and daily.'>
 
-  <link rel="canonical" href="http://192.168.219.102:4000/class-Kotlin/">
+  <link rel="canonical" href="http://192.168.219.102:4000/bonobogit/">
   <link rel="alternate" type="application/rss+xml" title="Mike Chu&#39;s Story | Thank you for visiting." href="/feed.xml">
 
   <!-- Google Font -->
@@ -128,7 +128,7 @@
 	<div class="row">
 		<div class="col col-12">
 			<div class="post-image-box">
-				<div class="post-image" style="background-image: url(/img/Kotlin-logo.png)"></div>
+				<div class="post-image" style="background-image: url(/img/bonobogit/logo.JPG)"></div>
 			</div>
 		</div>
 	</div>
@@ -143,11 +143,13 @@
 					
 					<div class="post-tag">
 						
-						<a href="/tags#Kotlin" class="tag">Kotlin</a>
+						<a href="/tags#Git" class="tag">Git</a>
+						
+						<a href="/tags#Bonobo Git" class="tag">Bonobo Git</a>
 						
 					</div>
 					
-					<h1 class="post-title">코틀린(Kotlin) 클래스 -5-</h1>
+					<h1 class="post-title">Windows git server 셋팅(Bonobo Git)</h1>
 					<div class="post-info">
 						<div class="post-info-author">
 							<div class="info-author-avatar" style="background-image: url(/img/mike.chu.jpg)"></div>
@@ -156,7 +158,7 @@
 						</div>
 						<div class="post-date">
 							<span>
-								<time datetime="2020-07-19T14:30:22+09:00">Jul 19, 2020</time>
+								<time datetime="2020-09-06T23:20:22+09:00">Sep 06, 2020</time>
 							</span>
 						</div>
 					</div>
@@ -164,180 +166,77 @@
 
 				<div class="post-body">
 					<h2 id="overview">Overview</h2>
-<p>객체 지행 프로그래밍에서는 클래스라는 개념이 빠질 수 없습니다. 많은 객체를 클래스로 구현하기 때문입니다. 만약 클래스가 익숙하지 않으시다면 제 블로그가 도움이 되지 않을 수 있습니다. 코틀린에서 클래스를 어떻게 표현하는지 알아보겠습니다.<br />
-<span style="color: grey"><em>이 글은 “Do it! 코틀린 프로그래밍”을 읽으면서 작성되었습니다.</em></span><br />
+<p>외부에 나가서 버전 컨트롤이 따로 없는것도 물론이고, 서버 리소스도 받지 않아 다음과 같은 방법으로 노트북에 깃서버를 구성하여 프로젝트를 진행한 적이 있습니다. Bonobo Git을 설치하였는데, Bonobo Git만으로도 코드 변경점, 배포를 효율적으로 할 수 있습니다.<br />
 <br />
-<a href="#클래스의-생성자">1. 클래스의 생성자</a><br />
-<a href="#클래스-상속">2. 클래스 상속</a><br />
+<a href="#사전-준비">1. 사전 준비</a><br />
+<a href="#설치">2. 설치</a><br />
 <a href="#마치며">3. 마치며</a></p>
 
 <hr />
 
-<h2 id="클래스의-생성자">클래스의 생성자</h2>
-<p>코틀린에서의 클래스는 메소드(함수)와 프로퍼티(변수)를 가집니다. 변수 또는 필드라고 하지않고 프로퍼티라고 지칭하는 이유는 프로퍼티마다 내부적으로 자체의 접근 메소드를 가지고 있기 때문이라고 합니다.<br />
-클래스를 만들어 볼텐데요. 일반적으로 클래스를 호출하면 다음과 같이 정의하고 호출할 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Bird</span><span class="p">{</span>
-    <span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span>
-    <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span>
-    <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span>
-    <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span>
+<h2 id="사전-준비">사전 준비</h2>
+<p>Bonobo GIt은 다음과 같은 사전 셋팅이 필요합니다.</p>
+<ul>
+  <li>IIS 활성화</li>
+  <li>Git 설치
+    <ul>
+      <li>Link : https://git-scm.com/</li>
+    </ul>
+  </li>
+  <li>Bonobo Git 설치
+    <ul>
+      <li>Link : https://bonobogitserver.com/</li>
+    </ul>
+  </li>
+  <li>.Net Framework 4.6 설치
+    <ul>
+      <li>Link : https://www.microsoft.com/en-gb/download/details.aspx?id=48130</li>
+    </ul>
+  </li>
+</ul>
 
-    <span class="k">constructor</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">wing</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="n">beak</span><span class="p">:</span><span class="n">String</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="nc">String</span><span class="p">){</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="n">name</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">wing</span> <span class="p">=</span> <span class="n">wing</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">beak</span> <span class="p">=</span> <span class="n">beak</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">color</span> <span class="p">=</span> <span class="n">color</span>
-    <span class="p">}</span>
-
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kd">val</span> <span class="py">coco</span> <span class="p">=</span> <span class="n">Bird</span><span class="p">(</span><span class="s">"mybird"</span><span class="p">,</span><span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
-
-    <span class="n">coco</span><span class="p">.</span><span class="n">color</span><span class="p">=</span><span class="s">"yellow"</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"cooc.color: ${coco.color}"</span><span class="p">)</span>
-    <span class="n">coco</span><span class="p">.</span><span class="n">fly</span><span class="p">()</span>
-    <span class="n">coco</span><span class="p">.</span><span class="n">sing</span><span class="p">(</span><span class="m">3</span><span class="p">)</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<blockquote>
-  <p>cooc.color: yellow<br />
-Fly wing: 2<br />
-Sing vol: 3</p>
-</blockquote>
-
-<p><br />
-main문을 확인하면 Bird 클래스를 매개변수와 함께 coco로 생성하고 coco의 color를 변경하는 예제입니다. 여기서 <strong>constructor</strong>메소드를 볼 수 있는데요, 이것이 생성자 입니다. 일반적으로 java에서 위와 같이 표현을 하고 있고, 다만 다른 것은 new 키워드가 사라졌습니다. Kotlin에서는 new 없이도 객체를 생성할 수 있습니다.<br />
- 생성자를 다르게도 표현할 수 있는데요. 다음 예제를 보시면 됩니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Bird</span> <span class="p">(</span><span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<p><br />
-클래스 명시시 생성자를 함께 할 수 있습니다. 클래스 옆에 있는 생성자를 주 생성자, constructor 메소드를 부 생성자라고 합니다. 만약 생성자에서 처리해야할 구문이 존재한다면, 초기화(<strong>init</strong>) 블록을 넣을 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Bird</span> <span class="p">(</span><span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="n">init</span> <span class="p">{</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">"----------초기화 블록 시작----------"</span><span class="p">)</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">"이름은 $name, 부리는 $beak"</span><span class="p">)</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">sing</span><span class="p">(</span><span class="m">3</span><span class="p">)</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">"----------초기화 블록 끝----------"</span><span class="p">)</span>
-    <span class="p">}</span>
-
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kd">val</span> <span class="py">coco</span> <span class="p">=</span> <span class="n">Bird</span><span class="p">(</span><span class="s">"mybird"</span><span class="p">,</span><span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
-
-    <span class="n">coco</span><span class="p">.</span><span class="n">color</span><span class="p">=</span><span class="s">"yellow"</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"cooc.color: ${coco.color}"</span><span class="p">)</span>
-    <span class="n">coco</span><span class="p">.</span><span class="n">fly</span><span class="p">()</span>
-    <span class="n">coco</span><span class="p">.</span><span class="n">sing</span><span class="p">(</span><span class="m">3</span><span class="p">)</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<blockquote>
-  <p>———-초기화 블록 시작———-<br />
-이름은 mybird, 부리는 short<br />
-Sing vol: 3<br />
-———-초기화 블록 끝———-<br />
-cooc.color: yellow<br />
-Fly wing: 2<br />
-Sing vol: 3</p>
-</blockquote>
-
-<p><br />
-클래스 생성 시 init 블록이 처리되는 것을 확인할 수 있습니다. 클래스 옆에 생성자가 있고, 명확히 구분 되므로 더 가독성있는 코드를 만들 수 있습니다.</p>
+<p>기본적으로 Windows 7 이상이어야 하고 .Net이 4.0 이상에서 돌려야 합니다. 우선 IIS를 활성화 하기 위해서 최상위 .Net 기능 활성화와 아래 이미지 처럼 체크 하시면 됩니다.<br />
+<img src="../img/bonobogit/bonobogit.png" alt="IIS셋팅" /></p>
 
 <hr />
 
-<h2 id="클래스-상속">클래스 상속</h2>
-<p>코틀린의 모든 클래스는 묵시적으로 Any 클래스로부터 상속을 받습니다. 상속에 있어서는 <strong>open</strong> 키워드를 알아야 합니다. 클래스 앞에 open 키워드를 붙이면 상속할 수 있는 클래스로 선언하고 open 키워드가 없으면 상속할 수 없는 클래스 입니다. 다음을 보면 쉽게 이해할 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">open</span> <span class="kd">class</span> <span class="nc">Bird</span> <span class="p">(</span><span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
+<h2 id="설치">설치</h2>
 
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
+<ul>
+  <li><a href="https://bonobogitserver.com/">Bonobo Git 설치</a>를 먼저 합니다.<br />
+Bonobo Git을 받은 뒤 압축을 풀어 줍니다.</li>
+  <li>그룹 권한 추가<br />
+해당 디렉토리의 그룹 권한을 추가 해줍니다.<br />
+<img src="../img/bonobogit/iis_1.JPG" alt="그룹 추가" /> <br />
+<br /></li>
+  <li>IIS(인터넷 정보 서비스) 관리자에서 압축푼 경로를 추가해줍니다.<br />
+저는 다음과 같은 순서로 추가하였습니다.
+    <ul>
+      <li>Default Web Site 아래에 가상디렉토리 추가</li>
+      <li>우측클릭 후 애플리케이션 변환 클릭</li>
+      <li>애플리케이션 풀 선택 - .Net 4.5 선택<br />
+<img src="../img/bonobogit/iis_2.JPG" alt=".Net4.5추가" /><br />
+<br /></li>
+    </ul>
+  </li>
+  <li>http://localhost/gitserver/ 접속해서 확인
+접속해서 확인하면 접속할 수 있습니다.<br />
+<img src="../img/bonobogit/bonobo_1.JPG" alt="bonobo git" /><br />
+<br /></li>
+</ul>
 
-  <span class="kd">class</span> <span class="nc">Lark</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">wing</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="nv">beak</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="nc">String</span><span class="p">)</span> <span class="p">:</span> <span class="nc">Bird</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wing</span><span class="p">,</span> <span class="n">beak</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">fun</span> <span class="nf">singHiton</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Happly Song!"</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="kd">class</span> <span class="nc">Parrot</span> <span class="p">:</span> <span class="n">Bird</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="py">language</span><span class="p">:</span> <span class="n">String</span>
-
-    <span class="k">constructor</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">wing</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="nv">beak</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">language</span><span class="p">:</span> <span class="nc">String</span><span class="p">)</span> <span class="p">:</span> <span class="nc">super</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wing</span><span class="p">,</span> <span class="n">beak</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="n">language</span> <span class="p">=</span> <span class="n">language</span>
-    <span class="p">}</span>
-
-    <span class="k">fun</span> <span class="nf">speak</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Speak: $language"</span><span class="p">)</span>
- <span class="p">}</span>
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kd">val</span> <span class="py">coco</span> <span class="p">=</span> <span class="n">Bird</span><span class="p">(</span><span class="s">"mybird"</span><span class="p">,</span><span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
-    <span class="kd">val</span> <span class="py">lark</span> <span class="p">=</span> <span class="n">Lark</span><span class="p">(</span><span class="s">"mylark"</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s">"long"</span><span class="p">,</span> <span class="s">"brown"</span><span class="p">)</span>
-    <span class="kd">val</span> <span class="py">parrot</span> <span class="p">=</span> <span class="n">Parrot</span><span class="p">(</span><span class="s">"myparrot"</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"multiple"</span><span class="p">,</span> <span class="s">"korean"</span><span class="p">)</span>
-
-    <span class="n">println</span><span class="p">(</span><span class="s">"Coco: ${coco.name}, ${coco.wing}, ${coco.beak}, ${coco.color}"</span><span class="p">)</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"Lark: ${lark.name}, ${lark.wing}, ${lark.beak}, ${lark.color}"</span><span class="p">)</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"Parrot: ${parrot.name}, ${parrot.wing}, ${parrot.beak}, ${parrot.color}, ${parrot.language}"</span><span class="p">)</span>
-    <span class="n">lark</span><span class="p">.</span><span class="n">singHiton</span><span class="p">()</span>
-    <span class="n">parrot</span><span class="p">.</span><span class="n">speak</span><span class="p">()</span>
-    <span class="n">lark</span><span class="p">.</span><span class="n">fly</span><span class="p">()</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<blockquote>
-  <p>Coco: mybird, 2, short, blue<br />
-Lark: mylark, 2, long, brown<br />
-Parrot: myparrot, 2, short, multiple, korean<br />
-Happly Song!<br />
-Speak: korean<br />
-Fly wing: 2</p>
-</blockquote>
-
-<p>open 키워드를 통해 Bird클래스를 상속 가능하게 해주고 변수 인자를 주듯이 Bird를 주어 상속받도록 하였습니다. 상속을 받았기 때문에 lark.fly() 시 Bird의 fly()가 호출되는 것을 확인하였습니다. 그리고 open 키워드는 클래스 말고도 다형성을 위해 오버라이딩 할 때도 사용할 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">open</span> <span class="kd">class</span> <span class="nc">Bird</span> <span class="p">(</span><span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">open</span> <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="kd">class</span> <span class="nc">Parrot</span> <span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">wing</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="nv">beak</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">language</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">:</span> <span class="nc">Bird</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wing</span><span class="p">,</span> <span class="n">beak</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="k">fun</span> <span class="nf">speak</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Speak: $language"</span><span class="p">)</span>
-    <span class="k">override</span> <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">println</span><span class="p">(</span><span class="s">"I'm a parrot! The volume level is $vol"</span><span class="p">)</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kd">val</span> <span class="py">coco</span> <span class="p">=</span> <span class="n">Bird</span><span class="p">(</span><span class="s">"mybird"</span><span class="p">,</span><span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
-    <span class="kd">val</span> <span class="py">parrot</span> <span class="p">=</span> <span class="n">Parrot</span><span class="p">(</span><span class="s">"myparrot"</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"multiple"</span><span class="p">,</span> <span class="s">"korean"</span><span class="p">)</span>
-
-    <span class="n">println</span><span class="p">(</span><span class="s">"Parrot: ${parrot.name}, ${parrot.wing}, ${parrot.beak}, ${parrot.color}, ${parrot.language}"</span><span class="p">)</span>
-    <span class="n">parrot</span><span class="p">.</span><span class="n">sing</span><span class="p">(</span><span class="m">5</span><span class="p">)</span>
-    <span class="n">parrot</span><span class="p">.</span><span class="n">speak</span><span class="p">()</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<blockquote>
-  <p>Parrot: myparrot, 2, short, multiple, korean<br />
-I’m a parrot! The volume level is 5<br />
-Speak: korean</p>
-</blockquote>
+<p>bonobo git은 쉽게 설치하고 운용할 수 있습니다. 첫 admin ID/PW 은 admin/admin 입니다. 이후 기본적인 Setting에서 권한 설정 후 사용하시면 됩니다. ssh는 지원하지 않고, http를 지원하고 있습니다. 사용에 참고하시면 됩니다.</p>
 
 <hr />
 
 <h2 id="마치며">마치며</h2>
-<p>이제 객체 들어왔습니다. 다음 단원은 프로퍼티던데요. 열심히 공부해서 준비하겠습니다. 읽어주셔서 감사합니다.</p>
+<p>번외로 만약 iis가 아닌 apach나 nginx를 설치해서 사용도 하고있고, Linux 환경에서도 운영할 수 있습니다. 아무래도 가볍다보니 gitlab을 설치하는 것보다 더 빠르고 유용하지만 다만 보안 프로토콜을 지원하지 않아 이 부분이 필요하다면 gltlab을 도입하는 것도 좋은 방법입니다.</p>
 
 
 					<div class="post-share">
 						<ul class="share-list list-reset">
 							<li class="share-item">
-								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/class-Kotlin/"
+								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/bonobogit/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Facebook" rel="nofollow">
 									<i class="ion ion-logo-facebook"></i>
@@ -345,7 +244,7 @@ Speak: korean</p>
 							</li>
 					
 							<li class="share-item">
-								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%81%B4%EB%9E%98%EC%8A%A4%20-5-&url=http://192.168.219.102:4000/class-Kotlin/"
+								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=Windows%20git%20server%20%EC%85%8B%ED%8C%85(Bonobo%20Git)&url=http://192.168.219.102:4000/bonobogit/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Twitter" rel="nofollow">
 									<i class="ion ion-logo-twitter"></i>
@@ -353,7 +252,7 @@ Speak: korean</p>
 							</li>
 					
 							<li class="share-item">
-								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/class-Kotlin/&title=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%81%B4%EB%9E%98%EC%8A%A4%20-5-&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
+								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/bonobogit/&title=Windows%20git%20server%20%EC%85%8B%ED%8C%85(Bonobo%20Git)&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on LinkedIn" rel="nofollow">
 									<i class="ion ion-logo-linkedin"></i>
@@ -361,7 +260,7 @@ Speak: korean</p>
 							</li>
 					
 							<li class="share-item">
-								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/class-Kotlin/&amp;media=http://192.168.219.102:4000/img/Kotlin-logo.png&amp;description=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%81%B4%EB%9E%98%EC%8A%A4%20-5-"
+								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/bonobogit/&amp;media=http://192.168.219.102:4000/img/bonobogit/logo.JPG&amp;description=Windows%20git%20server%20%EC%85%8B%ED%8C%85(Bonobo%20Git)"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Pinterest" rel="nofollow">
 									<i class="ion ion-logo-pinterest"></i>
@@ -373,16 +272,11 @@ Speak: korean</p>
 
 				<div class="post-navigation">
 					
-					<a href="/loop-condition-Kotlin/" class="prev">
+					<a href="/data-class-Kotlin/" class="prev">
 						<div class="post-nav-arrow"><i class="ion ion-ios-arrow-round-back"></i> Previous Article</div>
-						<h2 class="post-nav-title">코틀린(Kotlin) 조건문 반복문 -4-</h2>
+						<h2 class="post-nav-title">코틀린(Kotlin) 제네릭 -11-</h2>
 					</a>
 					 
-					<a href="/property-Kotlin/" class="next">
-						<div class="post-nav-arrow">Next Article <i class="ion ion-ios-arrow-round-forward"></i></div>
-						<h2 class="post-nav-title">코틀린(Kotlin) 프로퍼티(1) -6-</h2>
-					</a>
-					
 				</div>
 
 			</div>
