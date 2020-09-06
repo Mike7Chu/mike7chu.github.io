@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "코틀린(Kotlin) 제네릭 -11-",
+      "category" : "",
+      "tags"     : "Kotlin",
+      "url"      : "/data-class-Kotlin/",
+      "date"     : "2020-09-06 22:20:22 +0900"
+    } ,
+  
+    {
       "title"    : "코틀린(Kotlin) 데이터클래스와 기타클래스 -10-",
       "category" : "",
       "tags"     : "Kotlin",
