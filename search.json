@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "WSL에서 SAMBA 마운트하기",
+      "category" : "",
+      "tags"     : "wsl and samba",
+      "url"      : "/WSL_mountsamba/",
+      "date"     : "2020-09-13 22:20:22 +0900"
+    } ,
+  
+    {
       "title"    : "Windows git server 셋팅(Bonobo Git)",
       "category" : "",
       "tags"     : "Git and Bonobo Git",
