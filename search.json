@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "코틀린(Kotlin) 컬렉션(List)-12-",
+      "category" : "",
+      "tags"     : "Kotlin",
+      "url"      : "/collection-1-class-Kotlin/",
+      "date"     : "2020-09-20 21:30:22 +0900"
+    } ,
+  
+    {
       "title"    : "WSL에서 SAMBA 마운트하기",
       "category" : "",
       "tags"     : "wsl and samba",

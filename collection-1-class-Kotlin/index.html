@@ -6,10 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>자작나스 만들기 Transmission(토렌트)(2)!</title>
+  <title>코틀린(Kotlin) 컬렉션(List)-12-</title>
   <meta name='description' content='These story for everything such as Life, develop and daily.'>
 
-  <link rel="canonical" href="http://192.168.219.102:4000/How-to-make-nas-with-raspberrypi_2/">
+  <link rel="canonical" href="http://192.168.219.102:4000/collection-1-class-Kotlin/">
   <link rel="alternate" type="application/rss+xml" title="Mike Chu&#39;s Story | Thank you for visiting." href="/feed.xml">
 
   <!-- Google Font -->
@@ -129,7 +129,7 @@
 	<div class="row">
 		<div class="col col-12">
 			<div class="post-image-box">
-				<div class="post-image" style="background-image: url(/img/nas_11.JPG)"></div>
+				<div class="post-image" style="background-image: url(/img/Kotlin-logo.png)"></div>
 			</div>
 		</div>
 	</div>
@@ -144,17 +144,11 @@
 					
 					<div class="post-tag">
 						
-						<a href="/tags#nas" class="tag">nas</a>
-						
-						<a href="/tags#raspberrypi" class="tag">raspberrypi</a>
-						
-						<a href="/tags#omv" class="tag">omv</a>
-						
-						<a href="/tags#Transmission" class="tag">Transmission</a>
+						<a href="/tags#Kotlin" class="tag">Kotlin</a>
 						
 					</div>
 					
-					<h1 class="post-title">자작나스 만들기 Transmission(토렌트)(2)!</h1>
+					<h1 class="post-title">코틀린(Kotlin) 컬렉션(List)-12-</h1>
 					<div class="post-info">
 						<div class="post-info-author">
 							<div class="info-author-avatar" style="background-image: url(/img/mike.chu.jpg)"></div>
@@ -163,7 +157,7 @@
 						</div>
 						<div class="post-date">
 							<span>
-								<time datetime="2020-04-06T00:30:16+09:00">Apr 06, 2020</time>
+								<time datetime="2020-09-20T21:30:22+09:00">Sep 20, 2020</time>
 							</span>
 						</div>
 					</div>
@@ -171,74 +165,207 @@
 
 				<div class="post-body">
 					<h2 id="overview">Overview</h2>
-<p>안녕하세요. Raspberrypi로 자작 나스 구축 두 번째 시간입니다. 간단한 설정과 미디어 서버인 Plex를 설치하고 BitTorrent를 설치하는 시간을 가지겠습니다.</p>
-
-<hr />
-<h2 id="omv-설정하기">OMV 설정하기</h2>
-<p>이전 시간에 OMV를 성공적으로 설치하셨으면, 본인 NAS IP 입력시(ifconfig cmd를 입력하면 확일할 수 있습니다.) 아래와 같은 로그인 창으로 접속하실 수 있을겁니다.<br />
-<img src="../img/nas1.png" alt="" /><br />
+<p>표준 라이브러리로 제공되고 있는 자료구조 중 컬렉션을 알아보겠습니다. 컬렉션은 List, Set, Map등이 있습니다. 컬렉션에 대해서 알아보겠습니다.<br />
+<span style="color: grey"><em>이 글은 “Do it! 코틀린 프로그래밍”을 읽으면서 작성되었습니다.</em></span><br />
 <br />
-로그인은 암호는 ssh에서 설정하셨으면 해당 암호로 접속하시면 되고, 아니면 기본적으로 <strong><span style="color: red">openvaultmedia</span></strong>입니다. 로그인이 완료되면 아래와 같은 창을 확인할 수 있습니다.<br />
-본격적으로 Transmission을 설치하기 전 다음 설정을 먼저 진행할겁니다.</p>
-<ol>
-  <li>저장소 추가</li>
-  <li>사용자 추가</li>
-  <li>공유 폴더 생성<br />
-천천히 따라 오시면 됩니다.
-<img src="../img/nas_1.JPG" alt="" /><br />
-<br />
-자, 이제 저장소를 추가할 건데요, 하드나 usb등 추가 저장장치를 연결해주시고, 저장장치가 인식이되면, 왼쪽 탭중 파일시스템에 가셔서 아래 이미지의 생성이나 마운트를 클릭하여 레이블을 입력하여 만들어줍니다. <em>“생성이 되면 설정이 변경되었습니다. 적용 하기 전까지 이 설정은 반영되지 않습니다.”</em>이라는 문구가 뜰텐데, 적용을 눌러줍니다.<br />
-저의 경우에는 /dev/sda1 이 share1으로 생성하였습니다.<br />
-<img src="../img/nas_5.jpg" alt="" /><br />
-<br />
-이제 사용자를 추가할 건데요, 사용자는 사용자 탭에서 추가를 클릭하면 아래 이미지처럼 팝업창이 뜹니다. 이름과 암호를 입력하고 그룹에서 저는 모든 권한을 다 주었는데, 보통 개인 NAS의 경우는 해당 계정으로 다 주는 것이 관리하기 편하고, 만약에 여러명이서 쓰는데, 계정을 분리하고 싶다면 상황에 따라 권한을 분리하시면 됩니다. 그 후 저장을 누르시고 <em>“설정이 변경되었습니다. 적용 하기 전까지 이 설정은 반영되지 않습니다.”</em> 문구가 나오면 적용을 눌러줍니다.<br />
-<img src="../img/nas_6.JPG" alt="" /> <br />
-<br />
-공유 폴더 생성은 파일 시스템에 폴더를 만드는 것입니다. 아래 정보를 입력하면 생성이 가능합니다. 오늘은 <strong>torrent</strong> 폴더로 생성하였습니다.
-<img src="../img/nas_7.JPG" alt="" /><br />
-<br /></li>
-</ol>
+<a href="#Collection">1. Collection</a><br />
+<a href="#List">2. List</a><br />
+<a href="#마치며">2. 마치며</a></p>
 
 <hr />
 
-<h2 id="transmission-설치">Transmission 설치</h2>
-<p>Transmission은 우리 NAS에서 토렌트 클라이언트 앱 중 하나입니다. 왼쪽 플러그인 탭에 들어가서 <strong>BitTorrent</strong>를 검색하면 나오는데, 체크박스를 체크하고 설치를 누르시면 됩니다.<br />
-<del>아래 그림에서 Plex 이미지도 같이 네모 박스되어있는데, 이번 포스팅에 2개를 모두 할까 하다가 Transmission만 다루게 되었습니다.</del>
-<img src="../img/nas_3.JPG" alt="" /><br />
+<h2 id="collection">Collection</h2>
+<p>컬렉션은 불변형(immutable)과 가변형(mutable)으로 나누어집니다. 자바에서는 오로지 가변형만 취급되므로, 자바코드와 같이 작성할 경우 주의해야합니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>컬렉션</th>
+      <th>불변형</th>
+      <th>가변형</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>List</td>
+      <td>listOf</td>
+      <td>mutableListOf, arrayListOf</td>
+    </tr>
+    <tr>
+      <td>Set</td>
+      <td>setOf</td>
+      <td>mutableSetOf, hashSetOf, linkedSetOf, sortedSetOf</td>
+    </tr>
+    <tr>
+      <td>Map</td>
+      <td>mapOf</td>
+      <td>mutableMapOf, hashMapOf, linkedMapOf, sortedMapOf</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br />
+또한, 변수를 선언할 때 불변형 val의 사용을 권장하듯이, 컬렉션도 되도록이면 읽기 전용인 불변형을 선언할 것을 권장합니다. 이제 하나씩 살펴보도록 하겠습니다.</p>
+
+<hr />
+
+<h2 id="list">List</h2>
+<p>List는 불변형일 경우 listOf()함수를 사용하여야 하며 원형은 다음과 같습니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span> <span class="nf">listOf</span><span class="p">(</span><span class="k">vararg</span> <span class="nv">elements</span><span class="p">:</span> <span class="nc">T</span><span class="p">):</span> <span class="nc">List</span><span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span>
+</code></pre></div></div>
+<p><br />
+값을 반환할 때는, List<T>로 반환하며 <T> 라는 형식 매개변수를 가져 원하는 자료형을 지정할 수 있습니다.</T></T></p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span><span class="c1">//do it Kotlin chap09.section2</span>
+    <span class="kd">var</span> <span class="py">numbers</span><span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="py">names</span><span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span><span class="s">"one"</span><span class="p">,</span> <span class="s">"two"</span><span class="p">,</span> <span class="s">"three"</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">name</span> <span class="k">in</span> <span class="n">names</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">println</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">num</span> <span class="k">in</span> <span class="n">numbers</span><span class="p">)</span> <span class="n">print</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+    <span class="n">println</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<blockquote>
+  <p>one<br />
+two<br />
+three<br />
+12345</p>
+</blockquote>
+
+<p><br />
+List에 접근할 위 처럼 in을 통해서 각각 변수를 받아 처리도 가능하고, 다음과 같이 인덱스를 지정해서 접근이 가능합니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="p">(</span><span class="n">index</span> <span class="k">in</span> <span class="n">names</span><span class="p">.</span><span class="n">indices</span><span class="p">)</span> <span class="p">{</span><span class="c1">//인덱스 지정</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"names[$index] = $(names[index])"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<blockquote>
+  <p>names[0] = one<br />
+names[1] = two<br />
+names[2] = three</p>
+</blockquote>
+
+<p><br />
+위와 같이 index를 통해 얻을 수 있습니다.<br />
 <br /></p>
+<h3 id="emptylist-listofnotnull">emptyList(), listOfNotNull()</h3>
+<p>비어있는 List를 생성하려면 다음과 같이 선언할 수 있습니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">val</span> <span class="py">emptyList</span><span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">emptyList</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;()</span>
+</code></pre></div></div>
+<p><br />
+만약 null을 제외하고 초기화 하려면 다음과 같이 초기화 할 수 있습니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">val</span> <span class="py">nonNullsList</span><span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">listOfNotNull</span><span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="m">45</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="k">null</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="n">nonNullsList</span><span class="p">)</span>
+</code></pre></div></div>
+<blockquote>
+  <p>[2, 45, 2, 5]</p>
+</blockquote>
 
-<hr />
+<p>List는 다음과 같은 메서드를 멤버로 가지고 있습니다.</p>
 
-<h2 id="transmission-설정">Transmission 설정</h2>
-<p>Transmission은 다음과 같은 설정으로 이용할 수 있습니다.</p>
-<ol>
-  <li>Transmission 활성화</li>
-  <li>저장 위치 및 임시폴더 생성(optional)</li>
-  <li>RPC 설정(웹페이지 구동)</li>
-</ol>
+<table>
+  <thead>
+    <tr>
+      <th>멤버 메서드</th>
+      <th>설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>get(index: Int)</td>
+      <td>특정 인덱스를 인자로 받아 해당 요소를 반환한다.</td>
+    </tr>
+    <tr>
+      <td>indexOf(element: E)</td>
+      <td>인자로 받은 요소가 첫 번째로 나타나는 인덱스를 반환하며, 없으면 -1을 반환한다.</td>
+    </tr>
+    <tr>
+      <td>lastIndexOf(element: E)</td>
+      <td>인자로 받은 요소가 마지막으로 나타나는 인덱스를 반환하고, 없으면 -1을 반환한다.</td>
+    </tr>
+    <tr>
+      <td>listIterator()</td>
+      <td>목록에 있는 iterator를 반환한다.</td>
+    </tr>
+    <tr>
+      <td>subList(fromIndex: Int, toIndex: Int)</td>
+      <td>특정 인덱스의 from과 to 범위에 있는 요소 목록을 반환한다.</td>
+    </tr>
+  </tbody>
+</table>
 
-<p>우선 활성화는 설정의 활성화를 누르시고 저장을 하시면 됩니다.<br />
-<img src="../img/nas_8.JPG" alt="" /><br />
-<br /><br />
-저장 위치 지정은 Files and Location에 있고, 이전에 생성해 둔 공유 폴더를 선택하고 디렉터리를 입력해줍니다. 그리고 미완료는 선택인데 필요하다고 생각이 들면 지정하시면 됩니다.<br />
-<img src="../img/nas_9.JPG" alt="" /><br />
-<br /><br />
-마지막으로 RPC(Remote prodecure call) 설정인데 이 설정을 통해 웹브라우져를 통해 Transmission을 이용 가능하답니다. 포트와 계정 정보를 입력 후 적용이 완료되면 아래 이미지의 보이기 버튼이나 주소의 포트번호를 입력하면 접속이 가능합니다.
-<img src="../img/nas_10.JPG" alt="" /><br />
-<br /></p>
+<p><br /></p>
+<h3 id="가변현-list-생성하기">가변현 List 생성하기</h3>
+<p>가변형 List를 생성하려면 두가지 헬퍼 함수를 사용하여 생성가능합니다.(<strong>arrayListOf(), mutableListOf()</strong>)</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span> <span class="nf">arrayListOf</span><span class="p">(</span><span class="k">vararg</span> <span class="nv">elements</span><span class="p">:</span> <span class="nc">T</span><span class="p">):</span> <span class="nc">ArrayList</span><span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span>
+<span class="k">public</span> <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span> <span class="nf">mutableListOf</span><span class="p">(</span><span class="k">vararg</span> <span class="nv">elements</span><span class="p">:</span> <span class="nc">T</span><span class="p">):</span> <span class="nc">MutableList</span><span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span>
+</code></pre></div></div>
+<p>다만 이 둘의 차이점은 arrayListOf()의 경우 자료형이 List가 아닌 자바의 ArrayList를 반환합니다. mutableListOf()의 경우 MutableList Type 입니다. MutableList는 ArrayList와 동작상 같고 명시적으로 의미상 차이만 있다고 합니다. 실제 구현은 다음과 같이 할 수 있습니다.</p>
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">mutableList</span><span class="p">:</span> <span class="n">MutableList</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">mutableListOf</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;(</span><span class="s">"Kildong"</span><span class="p">,</span> <span class="s">"Dooly"</span><span class="p">,</span> <span class="s">"Chelsu"</span><span class="p">)</span>
+    <span class="n">mutableList</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s">"Ben"</span><span class="p">)</span>
+    <span class="n">mutableList</span><span class="p">.</span><span class="n">removeAt</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+    <span class="n">mutableList</span><span class="p">[</span><span class="m">0</span><span class="p">]</span> <span class="p">=</span> <span class="s">"Sean"</span>
+    <span class="n">println</span><span class="p">(</span><span class="n">mutableList</span><span class="p">)</span>
+
+    <span class="kd">val</span> <span class="py">mutableListMixed</span> <span class="p">=</span> <span class="n">mutableListOf</span><span class="p">(</span><span class="s">"Android"</span><span class="p">,</span> <span class="s">"Apple"</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">6</span><span class="p">,</span> <span class="sc">'X'</span><span class="p">)</span>
+    <span class="n">println</span><span class="p">(</span><span class="n">mutableListMixed</span><span class="p">)</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+<blockquote>
+  <p>[Sean, Chelsu, Ben]<br />
+[Android, Apple ,5, 6, X]</p>
+</blockquote>
+
+<p><br />
+add, removeAt 과 같은 가변형용 멤버 메소드를 사용할 수 있습니다. 가변형에서 사용할 수 있는 메소드는 다음과 같습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>멤버 메서드</th>
+      <th>설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>add(index: Int)</td>
+      <td>인자로 전달 받은 요소를 추가하고 true를 반환하며, 이미 요소가 있거나 중복이 허용되지 않으면 false를 반환한다.</td>
+    </tr>
+    <tr>
+      <td>remove(element: E)</td>
+      <td>인자로 전달 받은 요소를 삭제하고 true를 반환하며, 삭제하려는 요소가 없다면 false를 반환한다.</td>
+    </tr>
+    <tr>
+      <td>addAll(element: Collection<E>)</E></td>
+      <td>컬렉션을 인자로 전달 받아 모든 요소를 추가하고 true를 반환하며, 실패하면 false를 반환한다.</td>
+    </tr>
+    <tr>
+      <td>removeAll(element: Collection<E>)</E></td>
+      <td>컬렉션을 인자로 전달 받아 모든 요소를 삭제하고 true를 반환하며, 실패하면 false를 반환한다.</td>
+    </tr>
+    <tr>
+      <td>retainAll(element: Collection<E>)</E></td>
+      <td>인자로 전달 받은 컬렉션의 요소만 보유한다. 성공하면 true를 반환하고, 실패하면 false를 반환한다.</td>
+    </tr>
+    <tr>
+      <td>clear())</td>
+      <td>컬렉션의 모든 요소를 삭제한다.</td>
+    </tr>
+  </tbody>
+</table>
 
 <hr />
 
 <h2 id="마치며">마치며</h2>
-<p>아래 이미지에서 보이는 Transmission 에서 토렌트 파일이나 마그넷 링크를 업로드 하면 토렌트를 이용할 수 있습니다. 많은 분들이 금일 포스팅을 통해서 토렌트를 이용할 수 있으면 좋겠습니다.<br />
-<br />
-<img src="../img/nas_11.JPG" alt="" /></p>
+<p>읽어주셔서 감사합니다.</p>
 
 
 					<div class="post-share">
 						<ul class="share-list list-reset">
 							<li class="share-item">
-								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/How-to-make-nas-with-raspberrypi_2/"
+								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/collection-1-class-Kotlin/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Facebook" rel="nofollow">
 									<i class="ion ion-logo-facebook"></i>
@@ -246,7 +373,7 @@
 							</li>
 					
 							<li class="share-item">
-								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=%EC%9E%90%EC%9E%91%EB%82%98%EC%8A%A4%20%EB%A7%8C%EB%93%A4%EA%B8%B0%20Transmission(%ED%86%A0%EB%A0%8C%ED%8A%B8)(2)!&url=http://192.168.219.102:4000/How-to-make-nas-with-raspberrypi_2/"
+								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EC%BB%AC%EB%A0%89%EC%85%98(List)-12-&url=http://192.168.219.102:4000/collection-1-class-Kotlin/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Twitter" rel="nofollow">
 									<i class="ion ion-logo-twitter"></i>
@@ -254,7 +381,7 @@
 							</li>
 					
 							<li class="share-item">
-								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/How-to-make-nas-with-raspberrypi_2/&title=%EC%9E%90%EC%9E%91%EB%82%98%EC%8A%A4%20%EB%A7%8C%EB%93%A4%EA%B8%B0%20Transmission(%ED%86%A0%EB%A0%8C%ED%8A%B8)(2)!&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
+								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/collection-1-class-Kotlin/&title=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EC%BB%AC%EB%A0%89%EC%85%98(List)-12-&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on LinkedIn" rel="nofollow">
 									<i class="ion ion-logo-linkedin"></i>
@@ -262,7 +389,7 @@
 							</li>
 					
 							<li class="share-item">
-								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/How-to-make-nas-with-raspberrypi_2/&amp;media=http://192.168.219.102:4000/img/nas_11.JPG&amp;description=%EC%9E%90%EC%9E%91%EB%82%98%EC%8A%A4%20%EB%A7%8C%EB%93%A4%EA%B8%B0%20Transmission(%ED%86%A0%EB%A0%8C%ED%8A%B8)(2)!"
+								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/collection-1-class-Kotlin/&amp;media=http://192.168.219.102:4000/img/Kotlin-logo.png&amp;description=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EC%BB%AC%EB%A0%89%EC%85%98(List)-12-"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Pinterest" rel="nofollow">
 									<i class="ion ion-logo-pinterest"></i>
@@ -274,16 +401,11 @@
 
 				<div class="post-navigation">
 					
-					<a href="/How-to-make-nas-with-raspberrypi/" class="prev">
+					<a href="/WSL_mountsamba/" class="prev">
 						<div class="post-nav-arrow"><i class="ion ion-ios-arrow-round-back"></i> Previous Article</div>
-						<h2 class="post-nav-title">자작나스 만들기 (1)!</h2>
+						<h2 class="post-nav-title">WSL에서 SAMBA 마운트하기</h2>
 					</a>
 					 
-					<a href="/How-to-install-OpenVPN/" class="next">
-						<div class="post-nav-arrow">Next Article <i class="ion ion-ios-arrow-round-forward"></i></div>
-						<h2 class="post-nav-title">OpenVPN 서버 구축</h2>
-					</a>
-					
 				</div>
 
 			</div>
