@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "신경망 학습",
+      "category" : "",
+      "tags"     : "Deep Learning, 손실함수, and 신경망",
+      "url"      : "/deeplearning-basic/",
+      "date"     : "2021-07-20 23:21:42 +0900"
+    } ,
+  
+    {
       "title"    : "코틀린(Kotlin) 컬렉션(Set, Map)-13-",
       "category" : "",
       "tags"     : "Kotlin",

@@ -1,0 +1,10 @@
+@startuml
+
+  actor 결과
+  database 데이터
+  node 사람이 생각한 특징
+  데이터 -> 결과
+  데이터 -> (사람이 생각한 특징(SIFT, HOG 등)) -> (기계학습(SVM, KNN 등)) --> 결과
+  데이터 -> (신경망  딥러닝) -> 결과
+
+@enduml
