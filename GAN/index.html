@@ -6,10 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>코틀린(Kotlin) 클래스 -5-</title>
+  <title>GAN(Generative Adversarial Network)</title>
   <meta name='description' content='These story for everything such as Life, develop and daily.'>
 
-  <link rel="canonical" href="http://192.168.219.102:4000/class-Kotlin/">
+  <link rel="canonical" href="http://192.168.219.102:4000/GAN/">
   <link rel="alternate" type="application/rss+xml" title="Mike Chu&#39;s Story | Thank you for visiting." href="/feed.xml">
 
   <!-- Google Font -->
@@ -133,7 +133,7 @@
 	<div class="row">
 		<div class="col col-12">
 			<div class="post-image-box">
-				<div class="post-image" style="background-image: url(/img/Kotlin-logo.png)"></div>
+				<div class="post-image" style="background-image: url(/img/../img/gan1.png)"></div>
 			</div>
 		</div>
 	</div>
@@ -148,11 +148,13 @@
 					
 					<div class="post-tag">
 						
-						<a href="/tags#Kotlin" class="tag">Kotlin</a>
+						<a href="/tags#Deep Learning" class="tag">Deep Learning</a>
+						
+						<a href="/tags#GAN" class="tag">GAN</a>
 						
 					</div>
 					
-					<h1 class="post-title">코틀린(Kotlin) 클래스 -5-</h1>
+					<h1 class="post-title">GAN(Generative Adversarial Network)</h1>
 					<div class="post-info">
 						<div class="post-info-author">
 							<div class="info-author-avatar" style="background-image: url(/img/mike.chu.jpg)"></div>
@@ -161,7 +163,7 @@
 						</div>
 						<div class="post-date">
 							<span>
-								<time datetime="2020-07-19T14:30:22+09:00">Jul 19, 2020</time>
+								<time datetime="2021-09-09T06:22:42+09:00">Sep 09, 2021</time>
 							</span>
 						</div>
 					</div>
@@ -169,180 +171,96 @@
 
 				<div class="post-body">
 					<h2 id="overview">Overview</h2>
-<p>객체 지행 프로그래밍에서는 클래스라는 개념이 빠질 수 없습니다. 많은 객체를 클래스로 구현하기 때문입니다. 만약 클래스가 익숙하지 않으시다면 제 블로그가 도움이 되지 않을 수 있습니다. 코틀린에서 클래스를 어떻게 표현하는지 알아보겠습니다.<br />
-<span style="color: grey"><em>이 글은 “Do it! 코틀린 프로그래밍”을 읽으면서 작성되었습니다.</em></span><br />
+<p>딥러닝 모델 중 <strong>GAN</strong>에 대해서 알아볼 것입니다. GAN은 다른 모델과 달리 데이터를 생성함에 있습니다. GAN에 대하여 알아보도록 하겠습니다.</p>
+
+<p><span style="color: grey"> <em>이 글은 Google Developer를 참고하여 만들어 졌습니다.</em><br />
+<em>[출처]https://developers.google.com/machine-learning/gan/gan_structure</em>  </span><br />
 <br />
-<a href="#클래스의-생성자">1. 클래스의 생성자</a><br />
-<a href="#클래스-상속">2. 클래스 상속</a><br />
-<a href="#마치며">3. 마치며</a></p>
+<a href="#GAN이란">1. GAN이란</a><br />
+<a href="#Discriminator">2. Discriminator</a><br />
+<a href="#Generator">3. Generator</a><br />
+<a href="#GAN의-손실-함수">4. GAN의 손실 함수</a><br />
+<a href="#마치며">5. 마치며</a></p>
+
+<p><br /></p>
 
 <hr />
 
-<h2 id="클래스의-생성자">클래스의 생성자</h2>
-<p>코틀린에서의 클래스는 메소드(함수)와 프로퍼티(변수)를 가집니다. 변수 또는 필드라고 하지않고 프로퍼티라고 지칭하는 이유는 프로퍼티마다 내부적으로 자체의 접근 메소드를 가지고 있기 때문이라고 합니다.<br />
-클래스를 만들어 볼텐데요. 일반적으로 클래스를 호출하면 다음과 같이 정의하고 호출할 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Bird</span><span class="p">{</span>
-    <span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span>
-    <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span>
-    <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span>
-    <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span>
+<h2 id="gan이란">GAN이란</h2>
+<p>GAN은 Generative adversarial networks로 말 그대로 생성적 적대 망 입니다.<br />
+최근 머신러닝에서 혁신으로 기대되고 있으며, training data를 기반으로 새 데이터를 만듭니다.<br />
+아래 예시를 보면 GAN은 실제 이미지와 생성된 이미지를 비교하는 Discriminator 가 존재하고 이 Discriminator 를 통하여 Generator의 손실률을 개선하여 실제 이미지에 가까운 이미지를 만듭니다.<br />
+GAN을 이해하기 위해서 이산수학(확률 분포 기대값 등)의 내용을 알아야 하지만 현재 포스팅에서 생략하겠습니다.</p>
 
-    <span class="k">constructor</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">wing</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="n">beak</span><span class="p">:</span><span class="n">String</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="nc">String</span><span class="p">){</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="n">name</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">wing</span> <span class="p">=</span> <span class="n">wing</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">beak</span> <span class="p">=</span> <span class="n">beak</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">color</span> <span class="p">=</span> <span class="n">color</span>
-    <span class="p">}</span>
+<p><br /></p>
 
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kd">val</span> <span class="py">coco</span> <span class="p">=</span> <span class="n">Bird</span><span class="p">(</span><span class="s">"mybird"</span><span class="p">,</span><span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
-
-    <span class="n">coco</span><span class="p">.</span><span class="n">color</span><span class="p">=</span><span class="s">"yellow"</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"cooc.color: ${coco.color}"</span><span class="p">)</span>
-    <span class="n">coco</span><span class="p">.</span><span class="n">fly</span><span class="p">()</span>
-    <span class="n">coco</span><span class="p">.</span><span class="n">sing</span><span class="p">(</span><span class="m">3</span><span class="p">)</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<blockquote>
-  <p>cooc.color: yellow<br />
-Fly wing: 2<br />
-Sing vol: 3</p>
-</blockquote>
-
-<p><br />
-main문을 확인하면 Bird 클래스를 매개변수와 함께 coco로 생성하고 coco의 color를 변경하는 예제입니다. 여기서 <strong>constructor</strong>메소드를 볼 수 있는데요, 이것이 생성자 입니다. 일반적으로 java에서 위와 같이 표현을 하고 있고, 다만 다른 것은 new 키워드가 사라졌습니다. Kotlin에서는 new 없이도 객체를 생성할 수 있습니다.<br />
- 생성자를 다르게도 표현할 수 있는데요. 다음 예제를 보시면 됩니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Bird</span> <span class="p">(</span><span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<p><br />
-클래스 명시시 생성자를 함께 할 수 있습니다. 클래스 옆에 있는 생성자를 주 생성자, constructor 메소드를 부 생성자라고 합니다. 만약 생성자에서 처리해야할 구문이 존재한다면, 초기화(<strong>init</strong>) 블록을 넣을 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Bird</span> <span class="p">(</span><span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="n">init</span> <span class="p">{</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">"----------초기화 블록 시작----------"</span><span class="p">)</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">"이름은 $name, 부리는 $beak"</span><span class="p">)</span>
-      <span class="k">this</span><span class="p">.</span><span class="n">sing</span><span class="p">(</span><span class="m">3</span><span class="p">)</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">"----------초기화 블록 끝----------"</span><span class="p">)</span>
-    <span class="p">}</span>
-
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kd">val</span> <span class="py">coco</span> <span class="p">=</span> <span class="n">Bird</span><span class="p">(</span><span class="s">"mybird"</span><span class="p">,</span><span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
-
-    <span class="n">coco</span><span class="p">.</span><span class="n">color</span><span class="p">=</span><span class="s">"yellow"</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"cooc.color: ${coco.color}"</span><span class="p">)</span>
-    <span class="n">coco</span><span class="p">.</span><span class="n">fly</span><span class="p">()</span>
-    <span class="n">coco</span><span class="p">.</span><span class="n">sing</span><span class="p">(</span><span class="m">3</span><span class="p">)</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<blockquote>
-  <p>———-초기화 블록 시작———-<br />
-이름은 mybird, 부리는 short<br />
-Sing vol: 3<br />
-———-초기화 블록 끝———-<br />
-cooc.color: yellow<br />
-Fly wing: 2<br />
-Sing vol: 3</p>
-</blockquote>
-
-<p><br />
-클래스 생성 시 init 블록이 처리되는 것을 확인할 수 있습니다. 클래스 옆에 생성자가 있고, 명확히 구분 되므로 더 가독성있는 코드를 만들 수 있습니다.</p>
+<p align="center"><img style="background-color:white" src="https://developers.google.com/machine-learning/gan/images/gan_diagram.svg" /></p>
+<p><img src="../img/gan1.png" alt="GAN이란" /></p>
 
 <hr />
 
-<h2 id="클래스-상속">클래스 상속</h2>
-<p>코틀린의 모든 클래스는 묵시적으로 Any 클래스로부터 상속을 받습니다. 상속에 있어서는 <strong>open</strong> 키워드를 알아야 합니다. 클래스 앞에 open 키워드를 붙이면 상속할 수 있는 클래스로 선언하고 open 키워드가 없으면 상속할 수 없는 클래스 입니다. 다음을 보면 쉽게 이해할 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">open</span> <span class="kd">class</span> <span class="nc">Bird</span> <span class="p">(</span><span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
+<h2 id="discriminator">Discriminator</h2>
+<p>Discriminator를 간단히 말하면 식별자입니다.<br />
+Generator에 의해 만들어진 가짜이미지와 실제 이미지 샘플 입력을 받습니다.<br />
+입력 받은 샘플이 실제 이미지인지 가짜 이미지 인지 구분을 합니다.<br />
+그리고 결과가 손실함수와 연결되어 학습을 하게 됩니다.<br />
+이 때 Generator Loss와는 상관이 없습니다.<br />
+Generator나 Discriminator는 동시에 학습을 하지 않습니다.</p>
 
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
+<p><br /></p>
 
-  <span class="kd">class</span> <span class="nc">Lark</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">wing</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="nv">beak</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="nc">String</span><span class="p">)</span> <span class="p">:</span> <span class="nc">Bird</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wing</span><span class="p">,</span> <span class="n">beak</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">fun</span> <span class="nf">singHiton</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Happly Song!"</span><span class="p">)</span>
-  <span class="p">}</span>
+<p align="center"><img style="background-color:white" src="https://developers.google.com/machine-learning/gan/images/gan_diagram_discriminator.svg" /></p>
+<p><br /></p>
 
-  <span class="kd">class</span> <span class="nc">Parrot</span> <span class="p">:</span> <span class="n">Bird</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="py">language</span><span class="p">:</span> <span class="n">String</span>
+<hr />
 
-    <span class="k">constructor</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">wing</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="nv">beak</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">language</span><span class="p">:</span> <span class="nc">String</span><span class="p">)</span> <span class="p">:</span> <span class="nc">super</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wing</span><span class="p">,</span> <span class="n">beak</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="n">language</span> <span class="p">=</span> <span class="n">language</span>
-    <span class="p">}</span>
+<h2 id="generator">Generator</h2>
+<p>GAN의 Generator는 무작위 데이터 입력을 받아 가짜 데이터를 생성합니다.<br />
+Discriminator에 의해 Generator Loss가 나와 Generator의 학습이 진행 됩니다.<br />
+학습이 진행될 수록 Generator는 진짜에 가까운 Generator를 생성합니다.</p>
 
-    <span class="k">fun</span> <span class="nf">speak</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Speak: $language"</span><span class="p">)</span>
- <span class="p">}</span>
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kd">val</span> <span class="py">coco</span> <span class="p">=</span> <span class="n">Bird</span><span class="p">(</span><span class="s">"mybird"</span><span class="p">,</span><span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
-    <span class="kd">val</span> <span class="py">lark</span> <span class="p">=</span> <span class="n">Lark</span><span class="p">(</span><span class="s">"mylark"</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s">"long"</span><span class="p">,</span> <span class="s">"brown"</span><span class="p">)</span>
-    <span class="kd">val</span> <span class="py">parrot</span> <span class="p">=</span> <span class="n">Parrot</span><span class="p">(</span><span class="s">"myparrot"</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"multiple"</span><span class="p">,</span> <span class="s">"korean"</span><span class="p">)</span>
+<p><br /></p>
+<p align="center"><img style="background-color:white" src="https://developers.google.com/machine-learning/gan/images/gan_diagram_generator.svg" /></p>
 
-    <span class="n">println</span><span class="p">(</span><span class="s">"Coco: ${coco.name}, ${coco.wing}, ${coco.beak}, ${coco.color}"</span><span class="p">)</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"Lark: ${lark.name}, ${lark.wing}, ${lark.beak}, ${lark.color}"</span><span class="p">)</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">"Parrot: ${parrot.name}, ${parrot.wing}, ${parrot.beak}, ${parrot.color}, ${parrot.language}"</span><span class="p">)</span>
-    <span class="n">lark</span><span class="p">.</span><span class="n">singHiton</span><span class="p">()</span>
-    <span class="n">parrot</span><span class="p">.</span><span class="n">speak</span><span class="p">()</span>
-    <span class="n">lark</span><span class="p">.</span><span class="n">fly</span><span class="p">()</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<blockquote>
-  <p>Coco: mybird, 2, short, blue<br />
-Lark: mylark, 2, long, brown<br />
-Parrot: myparrot, 2, short, multiple, korean<br />
-Happly Song!<br />
-Speak: korean<br />
-Fly wing: 2</p>
-</blockquote>
+<hr />
 
-<p>open 키워드를 통해 Bird클래스를 상속 가능하게 해주고 변수 인자를 주듯이 Bird를 주어 상속받도록 하였습니다. 상속을 받았기 때문에 lark.fly() 시 Bird의 fly()가 호출되는 것을 확인하였습니다. 그리고 open 키워드는 클래스 말고도 다형성을 위해 오버라이딩 할 때도 사용할 수 있습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">open</span> <span class="kd">class</span> <span class="nc">Bird</span> <span class="p">(</span><span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">wing</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="kd">var</span> <span class="py">beak</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">color</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
+<h2 id="gan의-손실-함수">GAN의 손실 함수</h2>
+<p>GAN의 원리는 실제 이미지의 확률 분포를 복제하는 것에 있습니다.<br />
+분포의 실제 데이터와의 거리를 반영하는 손실함수를 사용해야 합니다.<br />
+손실 함수는 아래와 같습니다.</p>
 
-    <span class="k">fun</span> <span class="nf">fly</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Fly wing: $wing"</span><span class="p">)</span>
-    <span class="k">open</span> <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Sing vol: $vol"</span><span class="p">)</span>
-  <span class="p">}</span>
+<div>
+<span class="MathJax_Preview" style="color: inherit;"></span><div class="MathJax_SVG_Display" style="text-align: center;"><span class="MathJax_SVG" id="MathJax-Element-1-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;msub&gt;&lt;mi&gt;E&lt;/mi&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/msub&gt;&lt;mo stretchy=&quot;false&quot;&gt;[&lt;/mo&gt;&lt;mi&gt;l&lt;/mi&gt;&lt;mi&gt;o&lt;/mi&gt;&lt;mi&gt;g&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;D&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo stretchy=&quot;false&quot;&gt;]&lt;/mo&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;E&lt;/mi&gt;&lt;mi&gt;z&lt;/mi&gt;&lt;/msub&gt;&lt;mo stretchy=&quot;false&quot;&gt;[&lt;/mo&gt;&lt;mi&gt;l&lt;/mi&gt;&lt;mi&gt;o&lt;/mi&gt;&lt;mi&gt;g&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mi&gt;D&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;G&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;z&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo stretchy=&quot;false&quot;&gt;]&lt;/mo&gt;&lt;/math&gt;" role="presentation" style="font-size: 100%; display: inline-block; position: relative;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="38.049ex" height="2.613ex" viewBox="0 -817.3 16382 1125" role="img" focusable="false" style="vertical-align: -0.715ex;" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJMATHI-45" x="0" y="0"></use><use transform="scale(0.707)" xlink:href="#MJMATHI-78" x="1044" y="-213"></use><use xlink:href="#MJMAIN-5B" x="1243" y="0"></use><use xlink:href="#MJMATHI-6C" x="1521" y="0"></use><use xlink:href="#MJMATHI-6F" x="1820" y="0"></use><use xlink:href="#MJMATHI-67" x="2305" y="0"></use><use xlink:href="#MJMAIN-28" x="2786" y="0"></use><use xlink:href="#MJMATHI-44" x="3175" y="0"></use><use xlink:href="#MJMAIN-28" x="4004" y="0"></use><use xlink:href="#MJMATHI-78" x="4393" y="0"></use><use xlink:href="#MJMAIN-29" x="4966" y="0"></use><use xlink:href="#MJMAIN-29" x="5355" y="0"></use><use xlink:href="#MJMAIN-5D" x="5745" y="0"></use><use xlink:href="#MJMAIN-2B" x="6246" y="0"></use><g transform="translate(7246,0)"><use xlink:href="#MJMATHI-45" x="0" y="0"></use><use transform="scale(0.707)" xlink:href="#MJMATHI-7A" x="1044" y="-213"></use></g><use xlink:href="#MJMAIN-5B" x="8416" y="0"></use><use xlink:href="#MJMATHI-6C" x="8695" y="0"></use><use xlink:href="#MJMATHI-6F" x="8993" y="0"></use><use xlink:href="#MJMATHI-67" x="9479" y="0"></use><use xlink:href="#MJMAIN-28" x="9959" y="0"></use><use xlink:href="#MJMAIN-31" x="10349" y="0"></use><use xlink:href="#MJMAIN-2212" x="11071" y="0"></use><use xlink:href="#MJMATHI-44" x="12072" y="0"></use><use xlink:href="#MJMAIN-28" x="12900" y="0"></use><use xlink:href="#MJMATHI-47" x="13290" y="0"></use><use xlink:href="#MJMAIN-28" x="14076" y="0"></use><use xlink:href="#MJMATHI-7A" x="14466" y="0"></use><use xlink:href="#MJMAIN-29" x="14934" y="0"></use><use xlink:href="#MJMAIN-29" x="15324" y="0"></use><use xlink:href="#MJMAIN-29" x="15713" y="0"></use><use xlink:href="#MJMAIN-5D" x="16103" y="0"></use></g></svg><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">E</font></font></mi><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">x</font></font></mi></msub><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">[</font></font></mo><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">l</font></font></mi><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">o</font></font></mi><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">g</font></font></mi><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">(</font></font></mo><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">D</font></font></mi><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">(</font></font></mo><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">x</font></font></mi><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">)</font></font></mo><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">)</font></font></mo><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">]</font></font></mo><mo><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">+</font></font></mo><msub><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">E</font></font></mi><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">z</font></font></mi></msub><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">[</font></font></mo><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">l</font></font></mi><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">o</font></font></mi><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">g</font></font></mi><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">(</font></font></mo><mn><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">1</font></font></mn><mo><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-</font></font></mo><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">D</font></font></mi><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">(</font></font></mo><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">G</font></font></mi><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">(</font></font></mo><mi><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">z</font></font></mi><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">)</font></font></mo><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">)</font></font></mo><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">)</font></font></mo><mo stretchy="false"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">]</font></font></mo></math></span></span></div><script type="math/tex; mode=display" id="MathJax-Element-1">E_x[log(D(x))] + E_z[log(1 - D(G(z)))]</script>
+</div>
+<p><br /></p>
 
-  <span class="kd">class</span> <span class="nc">Parrot</span> <span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">wing</span><span class="p">:</span> <span class="nc">Int</span><span class="p">,</span> <span class="nv">beak</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="kd">var</span> <span class="py">language</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">:</span> <span class="nc">Bird</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wing</span><span class="p">,</span> <span class="n">beak</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span> <span class="p">{</span>
+<p>D(x)는 Discriminator가 실제 데이터 x 를 진짜로 판단할 확률에 대한 추정값 입니다. Ex는 기대값 입니다.<br />
+G(z)는 임의의 z 가 주어졌을 때 Generator의 출력입니다.<br />
+D(G(z))는 Discriminator가 가짜 데이터를 진짜로 판단할 확률에 대한 추정값 입니다.<br />
+Ez는 z가 주어졌을 때 기대값 입니다.</p>
 
-    <span class="k">fun</span> <span class="nf">speak</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s">"Speak: $language"</span><span class="p">)</span>
-    <span class="k">override</span> <span class="k">fun</span> <span class="nf">sing</span><span class="p">(</span><span class="nv">vol</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">println</span><span class="p">(</span><span class="s">"I'm a parrot! The volume level is $vol"</span><span class="p">)</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kd">val</span> <span class="py">coco</span> <span class="p">=</span> <span class="n">Bird</span><span class="p">(</span><span class="s">"mybird"</span><span class="p">,</span><span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
-    <span class="kd">val</span> <span class="py">parrot</span> <span class="p">=</span> <span class="n">Parrot</span><span class="p">(</span><span class="s">"myparrot"</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s">"short"</span><span class="p">,</span> <span class="s">"multiple"</span><span class="p">,</span> <span class="s">"korean"</span><span class="p">)</span>
+<hr />
 
-    <span class="n">println</span><span class="p">(</span><span class="s">"Parrot: ${parrot.name}, ${parrot.wing}, ${parrot.beak}, ${parrot.color}, ${parrot.language}"</span><span class="p">)</span>
-    <span class="n">parrot</span><span class="p">.</span><span class="n">sing</span><span class="p">(</span><span class="m">5</span><span class="p">)</span>
-    <span class="n">parrot</span><span class="p">.</span><span class="n">speak</span><span class="p">()</span>
-  <span class="p">}</span>
-</code></pre></div></div>
-<blockquote>
-  <p>Parrot: myparrot, 2, short, multiple, korean<br />
-I’m a parrot! The volume level is 5<br />
-Speak: korean</p>
-</blockquote>
+<h2 id="gan-예제코드">GAN 예제코드</h2>
+<p>GAN 예제코드는 아래를 참고하면 됩니다.</p>
+
+<p><a href="https://colab.research.google.com/github/tensorflow/gan/blob/master/tensorflow_gan/examples/colab_notebooks/tfgan_tutorial.ipynb?utm_source=ss-gan&amp;utm_campaign=colab-external&amp;utm_medium=referral&amp;utm_content=tfgan-intro#scrollTo=Zs8kdV0w7Rtq">TensorFlow Example</a><br />
+<a href="https://www.kaggle.com/vitorgamalemos/generating-digits-with-gans">Pytorch Example</a><br />
+<a href="https://www.kaggle.com/rafat97/pytorch-conditional-gan">C-GAN Pytorch Example</a></p>
+
+<p>예제를 돌리면 아래와 같이 GAN 모델에 의해 이미지가 생성 됩니다.<br />
+<img src="../img/gan2.png" alt="GAN 예제 결과" /></p>
 
 <hr />
 
 <h2 id="마치며">마치며</h2>
-<p>이제 객체 들어왔습니다. 다음 단원은 프로퍼티던데요. 열심히 공부해서 준비하겠습니다. 읽어주셔서 감사합니다.</p>
+<p>읽어주셔서 감사합니다. GAN에 대하여 간단하게 알아보았습니다.</p>
 
 
 					<div class="post-share">
 						<ul class="share-list list-reset">
 							<li class="share-item">
-								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/class-Kotlin/"
+								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/GAN/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Facebook" rel="nofollow">
 									<i class="ion ion-logo-facebook"></i>
@@ -350,7 +268,7 @@ Speak: korean</p>
 							</li>
 					
 							<li class="share-item">
-								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%81%B4%EB%9E%98%EC%8A%A4%20-5-&url=http://192.168.219.102:4000/class-Kotlin/"
+								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=GAN(Generative%20Adversarial%20Network)&url=http://192.168.219.102:4000/GAN/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Twitter" rel="nofollow">
 									<i class="ion ion-logo-twitter"></i>
@@ -358,7 +276,7 @@ Speak: korean</p>
 							</li>
 					
 							<li class="share-item">
-								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/class-Kotlin/&title=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%81%B4%EB%9E%98%EC%8A%A4%20-5-&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
+								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/GAN/&title=GAN(Generative%20Adversarial%20Network)&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on LinkedIn" rel="nofollow">
 									<i class="ion ion-logo-linkedin"></i>
@@ -366,7 +284,7 @@ Speak: korean</p>
 							</li>
 					
 							<li class="share-item">
-								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/class-Kotlin/&amp;media=http://192.168.219.102:4000/img/Kotlin-logo.png&amp;description=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%ED%81%B4%EB%9E%98%EC%8A%A4%20-5-"
+								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/GAN/&amp;media=http://192.168.219.102:4000/img/../img/gan1.png&amp;description=GAN(Generative%20Adversarial%20Network)"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Pinterest" rel="nofollow">
 									<i class="ion ion-logo-pinterest"></i>
@@ -378,16 +296,11 @@ Speak: korean</p>
 
 				<div class="post-navigation">
 					
-					<a href="/loop-condition-Kotlin/" class="prev">
+					<a href="/deeplearning-basic/" class="prev">
 						<div class="post-nav-arrow"><i class="ion ion-ios-arrow-round-back"></i> Previous Article</div>
-						<h2 class="post-nav-title">코틀린(Kotlin) 조건문 반복문 -4-</h2>
+						<h2 class="post-nav-title">신경망 학습</h2>
 					</a>
 					 
-					<a href="/property-Kotlin/" class="next">
-						<div class="post-nav-arrow">Next Article <i class="ion ion-ios-arrow-round-forward"></i></div>
-						<h2 class="post-nav-title">코틀린(Kotlin) 프로퍼티(1) -6-</h2>
-					</a>
-					
 				</div>
 
 			</div>
