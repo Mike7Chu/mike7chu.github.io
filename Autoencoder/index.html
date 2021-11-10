@@ -6,10 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>코틀린(Kotlin) 제네릭 -11-</title>
+  <title>Autoencoder</title>
   <meta name='description' content='These story for everything such as Life, develop and daily.'>
 
-  <link rel="canonical" href="http://192.168.219.102:4000/data-class-Kotlin/">
+  <link rel="canonical" href="http://192.168.219.102:4000/Autoencoder/">
   <link rel="alternate" type="application/rss+xml" title="Mike Chu&#39;s Story | Thank you for visiting." href="/feed.xml">
 
   <!-- Google Font -->
@@ -133,7 +133,7 @@
 	<div class="row">
 		<div class="col col-12">
 			<div class="post-image-box">
-				<div class="post-image" style="background-image: url(/img/Kotlin-logo.png)"></div>
+				<div class="post-image" style="background-image: url(/img/../img/autoencoder_1.JPG)"></div>
 			</div>
 		</div>
 	</div>
@@ -148,11 +148,13 @@
 					
 					<div class="post-tag">
 						
-						<a href="/tags#Kotlin" class="tag">Kotlin</a>
+						<a href="/tags#Deep Learning" class="tag">Deep Learning</a>
+						
+						<a href="/tags#Autoencoder" class="tag">Autoencoder</a>
 						
 					</div>
 					
-					<h1 class="post-title">코틀린(Kotlin) 제네릭 -11-</h1>
+					<h1 class="post-title">Autoencoder</h1>
 					<div class="post-info">
 						<div class="post-info-author">
 							<div class="info-author-avatar" style="background-image: url(/img/mike.chu.jpg)"></div>
@@ -161,7 +163,7 @@
 						</div>
 						<div class="post-date">
 							<span>
-								<time datetime="2020-09-06T22:20:22+09:00">Sep 06, 2020</time>
+								<time datetime="2021-11-11T03:40:02+09:00">Nov 11, 2021</time>
 							</span>
 						</div>
 					</div>
@@ -169,80 +171,204 @@
 
 				<div class="post-body">
 					<h2 id="overview">Overview</h2>
-<p>제네릭이란 컴파일 타임에 인스턴스의 자료형을 결정하여 안정성을 높이고 형변환의 번거로움을 줄여줍니다.<br />
-<span style="color: grey"><em>이 글은 “Do it! 코틀린 프로그래밍”을 읽으면서 작성되었습니다.</em></span><br />
+<p>딥러닝 모델 중 <strong>Autoencoder</strong>에 대해서 알아볼 것입니다. Autoencoder는 입력값만으로 학습하며 비지도학습입니다. 이와 관련하여 잡음을 제거해 데이터 복원하기까지 학습하도록 하겠습니다.</p>
+
+<p><span style="color: grey"><em>이 글은 “팽귄브로의 3분 딥러닝, 파이토치맛”을 읽으면서 작성되었습니다.</em><br />
+<em>예제 출처는 다음과 같습니다.<a href="https://github.com/keon/3-min-pytorch">github</a></em>  </span><br />
 <br />
-<a href="#제네릭">1. 제네릭</a><br />
-<a href="#마치며">2. 마치며</a></p>
+<a href="#Autoencoder란">1. Autoencoder란</a><br />
+<a href="#오토인코더로-이미지의-특징-추출하기">2. 오토인코더로 이미지의 특징 추출하기</a><br />
+<a href="#오토인코더로-망가진-이미지-복원하기">3. 오토인코더로 망가진 이미지 복원하기</a><br />
+<a href="#마치며">4. 마치며</a></p>
+
+<p><br /></p>
 
 <hr />
 
-<h2 id="제네릭">제네릭</h2>
-<p>제네릭은 <strong>&lt;&gt;</strong> 브라켓 사이에 형식 매개변수를 넣어 선언하여 이때 매개변수 형식을 결정할 수 있습니다.여러 자료형을 다루어야 하는 <strong>List, Set, Map</strong>등에서 많이 사용됩니다. 의도하지 않은 자료형의 객체를 지정하는 것을 막고 객체를 사용할 때 원래의 자료형에서 다른 자료형으로 형 변화 ㄴ시 발생할 수 있는 오류를 줄어줍니다. 아래 예제에서 살펴보겠습니다.</p>
-<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Box</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="nv">t</span><span class="p">:</span> <span class="nc">T</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="py">name</span> <span class="p">=</span> <span class="n">t</span>
-<span class="p">}</span>
+<h2 id="autoencoder란">Autoencoder란</h2>
+<ul>
+  <li><strong>Autoencoder</strong>는 비지도 학습으로 라벨링 없이 입력 데이터만으로 학습을 합니다.</li>
+  <li>입력 데이터도 X이고 출력 데이터도 X 입니다.</li>
+  <li>입력 데이터를 압축하고, 복원을 합니다.</li>
+  <li>압축과 복원하는 부분을 나누어 인코더(<em>encoder</em>), 디코더(<em>decoder</em>)라고 합니다.<br />
+<br /></li>
+</ul>
 
-<span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="py">box1</span><span class="p">:</span> <span class="n">Box</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">Box</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">&gt;(</span><span class="m">1</span><span class="p">)</span>
-    <span class="kd">var</span> <span class="py">box2</span><span class="p">:</span> <span class="n">Box</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">Box</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;(</span><span class="s">"Hello"</span><span class="p">)</span>
-    <span class="n">println</span><span class="p">(</span><span class="n">box1</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">println</span><span class="p">(</span><span class="n">box2</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
-<span class="p">}</span>
+<p><img src="../img/autoencoder_1.JPG" alt="Autoencoder개요" /><br />
+<br /></p>
+
+<ul>
+  <li>인코더를 거친 입력 데이터에 대한 특징을 알아낼 수 있습니다.</li>
+  <li>압축과 복원 과정에서 데이터가 손실이 발생합니다.</li>
+</ul>
+
+<hr />
+
+<h2 id="오토인코더로-이미지의-특징-추출하기">오토인코더로 이미지의 특징 추출하기</h2>
+<p>오토인코더는 크게 인코더, 디코더로 나누어집니다. 그래서 표현하면 다음과 같습니다.<br />
+<a href="https://www.kaggle.com/mike7chu/autoencoder">kaggle link</a><br />
+<span style="color: grey"><em>전체코드는 아래 링크에서 가져왔습니다.</em><br />
+<em>예제 출처는 다음과 같습니다.<a href="https://github.com/keon/3-min-pytorch">github</a></em>  </span></p>
+
+<h3 id="code-reivew">Code Reivew</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Autoencoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Autoencoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>   <span class="c1"># 입력의 특징을 3차원으로 압축합니다
+</span>        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">(),</span>       <span class="c1"># 픽셀당 0과 1 사이로 값을 출력합니다
+</span>        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">encoded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">decoded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">encoded</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">encoded</span><span class="p">,</span> <span class="n">decoded</span>
 </code></pre></div></div>
-<blockquote>
-  <p>1<br />
-Hello</p>
-</blockquote>
 
-<p><br />
-Box<T>에서 T가 바로 형식 매개변수 이름입니다. 그에 따라 box1에는 정수형 타입이 box2에는 문자열 타입이 된 것으로 알 수 있습니다. 여기서 T의 경우 형식을 말하며 그 외에도 다른 규칙을 줄 수 있습니다. 다른 규칙은 아래 표와 같습니다.</T></p>
+<p><img src="../img/autoencoder_2.JPG" alt="Autoencoder구조" /></p>
 
-<table>
-  <thead>
-    <tr>
-      <th>형식 매개변수 이름</th>
-      <th>의미</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>E</td>
-      <td>요소(Element)</td>
-    </tr>
-    <tr>
-      <td>K</td>
-      <td>키(key)</td>
-    </tr>
-    <tr>
-      <td>N</td>
-      <td>숫자(Number)</td>
-    </tr>
-    <tr>
-      <td>T</td>
-      <td>형식(Type)</td>
-    </tr>
-    <tr>
-      <td>V</td>
-      <td>값(Value)</td>
-    </tr>
-    <tr>
-      <td>S,U,V,etc</td>
-      <td>두 번째, 세 번째, 네 번째 형식(2nd, 3rd, 4th types)</td>
-    </tr>
-  </tbody>
-</table>
+<p><br /></p>
+
+<p>인코더의 경우 28<em>28을 입력을 받아 3인 출력의 데이터의 특징을 받습니다.<br />
+반대로 디코더의 경우 3의 입력을 받아 28</em>28 출력을 받습니다.</p>
+
+<p>손실함수의 경우 결과 값에 일치여부를 판단한 것에 대한 손실을 계산하는 것이 아닌 입력에 대한 손실율을 계산을 합니다.<br />
+그에 따라 평균제곱오차(<em>mean squared loss</em>)를 이용하여 손실율을 계산합니다.<br />
+그리고 Adam 최적화 알고리즘을 사용합니다. <a href="https://aikorea.org/cs231n/neural-networks-3/">가중치에 대한 자료</a></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">autoencoder</span> <span class="o">=</span> <span class="n">Autoencoder</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">autoencoder</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p>이후 학습을 하고 학습 결과를 살펴보았습니다.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 원본 이미지를 시각화 하기 (첫번째 열)
+</span><span class="n">view_data</span> <span class="o">=</span> <span class="n">trainset</span><span class="o">.</span><span class="n">data</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">)</span>
+<span class="n">view_data</span> <span class="o">=</span> <span class="n">view_data</span><span class="o">.</span><span class="nb">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">)</span><span class="o">/</span><span class="mf">255.</span>
+
+<span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">autoencoder</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">):</span>
+    <span class="n">autoencoder</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">train_loader</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+
+        <span class="n">encoded</span><span class="p">,</span> <span class="n">decoded</span> <span class="o">=</span> <span class="n">autoencoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">decoded</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">EPOCH</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">train</span><span class="p">(</span><span class="n">autoencoder</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">)</span>
+
+    <span class="c1"># 디코더에서 나온 이미지를 시각화 하기 (두번째 열)
+</span>    <span class="n">test_x</span> <span class="o">=</span> <span class="n">view_data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">decoded_data</span> <span class="o">=</span> <span class="n">autoencoder</span><span class="p">(</span><span class="n">test_x</span><span class="p">)</span>
+
+    <span class="c1"># 원본과 디코딩 결과 비교해보기
+</span>    <span class="n">f</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"[Epoch {}]"</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">epoch</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">view_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="n">i</span><span class="p">],(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">))</span>
+        <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">'gray'</span><span class="p">)</span>
+        <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(());</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(())</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">decoded_data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s">"cpu"</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">))</span>
+        <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">'gray'</span><span class="p">)</span>
+        <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(());</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(())</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+<p><img src="../img/autoencoder_3.JPG" alt="학습결과" /></p>
+
+<h3 id="학습-결과로부터-특징점-분석">학습 결과로부터 특징점 분석</h3>
+<p>오토인코더의 학습 결과를 확인하면 출력데이터 3개를 3차원 plot으로 그린 결과가 아래와 같습니다.<br />
+이를 통해 학습을 통하여 동일한 특징의 데이터들이 모이는 것을 알 수 있습니다.</p>
+<ul>
+  <li>오토인코더를 활용하여 데이터를 복원할 수 없는 데이터인 경우 이상점인 것을 찾아내는 방법이 있다고 합니다.<br />
+<img src="../img/autoencoder_4.JPG" alt="특징점 그래프" /></li>
+</ul>
+
+<p><br /></p>
+
+<hr />
+
+<h2 id="오토인코더로-망가진-이미지-복원하기">오토인코더로 망가진 이미지 복원하기</h2>
+<p>잡음 제거 오토인코더는 <a href="http://bit.ly/2MnyVCV">해당 논문</a>에서 처음 제안됐다고 합니다.</p>
+<ul>
+  <li>오토인코더는 일종의 압축입니다.</li>
+  <li>그에 따라 데이터 특성에 따라 우선순위를 매기고 낮은 순위의 데이터를 버린다는 뜻입니다.</li>
+  <li>여기서 낮은 순위의 데이터는 잡음을 의미합니다.</li>
+  <li>즉, 잡음이 있더라도 복원 시 잡음이 제거되는 것이 오토인코더의 특성 입니다.</li>
+</ul>
+
+<h3 id="code-review">Code Review</h3>
+<p><a href="https://www.kaggle.com/mike7chu/noise-reduction">kaggle link</a><br />
+<span style="color: grey"><em>전체코드는 아래 링크에서 가져왔습니다.</em><br />
+<em>예제 출처는 다음과 같습니다.<a href="https://github.com/keon/3-min-pytorch">github</a></em>  </span></p>
+
+<p>여기서 위의 코드와 다른 점은 학습 시 무작위 잡음을 이미지에 더해줍니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">add_noise</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">())</span> <span class="o">*</span> <span class="mf">0.2</span>
+    <span class="n">noisy_img</span> <span class="o">=</span> <span class="n">img</span> <span class="o">+</span> <span class="n">noise</span>
+    <span class="k">return</span> <span class="n">noisy_img</span>
+
+<span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">autoencoder</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">):</span>
+    <span class="n">autoencoder</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">avg_loss</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">train_loader</span><span class="p">):</span>
+        <span class="n">noisy_x</span> <span class="o">=</span> <span class="n">add_noise</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># 입력에 노이즈 더하기
+</span>        <span class="n">noisy_x</span> <span class="o">=</span> <span class="n">noisy_x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+
+        <span class="n">label</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+        <span class="n">encoded</span><span class="p">,</span> <span class="n">decoded</span> <span class="o">=</span> <span class="n">autoencoder</span><span class="p">(</span><span class="n">noisy_x</span><span class="p">)</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">decoded</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        
+        <span class="n">avg_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">avg_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_loader</span><span class="p">)</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p>학습결과를 보면 아래 이미지와 같습니다.<br />
+<img src="../img/autoencoder_5.JPG" alt="특징점 그래프" /></p>
 
 <hr />
 
 <h2 id="마치며">마치며</h2>
-<p>읽어주셔서 감사합니다.</p>
+<p>읽어주셔서 감사합니다. 비지도학습 Autoencoder에 대하여 간단하게 알아보았습니다.</p>
 
 
 					<div class="post-share">
 						<ul class="share-list list-reset">
 							<li class="share-item">
-								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/data-class-Kotlin/"
+								<a class="share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://192.168.219.102:4000/Autoencoder/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Facebook" rel="nofollow">
 									<i class="ion ion-logo-facebook"></i>
@@ -250,7 +376,7 @@ Box<T>에서 T가 바로 형식 매개변수 이름입니다. 그에 따라 box1
 							</li>
 					
 							<li class="share-item">
-								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EC%A0%9C%EB%84%A4%EB%A6%AD%20-11-&url=http://192.168.219.102:4000/data-class-Kotlin/"
+								<a class="share-twitter" href="https://twitter.com/intent/tweet?text=Autoencoder&url=http://192.168.219.102:4000/Autoencoder/"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Twitter" rel="nofollow">
 									<i class="ion ion-logo-twitter"></i>
@@ -258,7 +384,7 @@ Box<T>에서 T가 바로 형식 매개변수 이름입니다. 그에 따라 box1
 							</li>
 					
 							<li class="share-item">
-								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/data-class-Kotlin/&title=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EC%A0%9C%EB%84%A4%EB%A6%AD%20-11-&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
+								<a class="share-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http://192.168.219.102:4000/Autoencoder/&title=Autoencoder&summary=&source=Mike%20Chu's%20Story%20%7C%20Thank%20you%20for%20visiting."
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on LinkedIn" rel="nofollow">
 									<i class="ion ion-logo-linkedin"></i>
@@ -266,7 +392,7 @@ Box<T>에서 T가 바로 형식 매개변수 이름입니다. 그에 따라 box1
 							</li>
 					
 							<li class="share-item">
-								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/data-class-Kotlin/&amp;media=http://192.168.219.102:4000/img/Kotlin-logo.png&amp;description=%EC%BD%94%ED%8B%80%EB%A6%B0(Kotlin)%20%EC%A0%9C%EB%84%A4%EB%A6%AD%20-11-"
+								<a class="share-pinterest" href="http://pinterest.com/pin/create/button/?url=http://192.168.219.102:4000/Autoencoder/&amp;media=http://192.168.219.102:4000/img/../img/autoencoder_1.JPG&amp;description=Autoencoder"
 								onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
 								title="Share on Pinterest" rel="nofollow">
 									<i class="ion ion-logo-pinterest"></i>
@@ -278,16 +404,11 @@ Box<T>에서 T가 바로 형식 매개변수 이름입니다. 그에 따라 box1
 
 				<div class="post-navigation">
 					
-					<a href="/data-class-Kotlin/" class="prev">
+					<a href="/GAN/" class="prev">
 						<div class="post-nav-arrow"><i class="ion ion-ios-arrow-round-back"></i> Previous Article</div>
-						<h2 class="post-nav-title">코틀린(Kotlin) 데이터클래스와 기타클래스 -10-</h2>
+						<h2 class="post-nav-title">GAN(Generative Adversarial Network)</h2>
 					</a>
 					 
-					<a href="/bonobogit/" class="next">
-						<div class="post-nav-arrow">Next Article <i class="ion ion-ios-arrow-round-forward"></i></div>
-						<h2 class="post-nav-title">Windows git server 셋팅(Bonobo Git)</h2>
-					</a>
-					
 				</div>
 
 			</div>

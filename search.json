@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "Autoencoder",
+      "category" : "",
+      "tags"     : "Deep Learning and Autoencoder",
+      "url"      : "/Autoencoder/",
+      "date"     : "2021-11-11 03:40:02 +0900"
+    } ,
+  
+    {
       "title"    : "GAN(Generative Adversarial Network)",
       "category" : "",
       "tags"     : "Deep Learning and GAN",
